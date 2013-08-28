@@ -412,6 +412,7 @@ Define("EQ_DELIMITER", "qz_");
   $sql="";
   $strings=explode("\n", $data);
   $table_defined=array();
+
   for($i=0;$i<count($strings);$i++) {
 
    $strings[$i]=preg_replace('/\/\/.+$/is', '', $strings[$i]);

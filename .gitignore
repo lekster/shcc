@@ -1,5 +1,4 @@
 backup/*
-config.php
 .idea*
 *~
 modules/*/installed

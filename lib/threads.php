@@ -87,11 +87,11 @@ class Threads {
         $id = array_search($stream, $this->streams);
         //$result = stream_get_contents($this->pipes[$id][1]);
         if (feof($stream) || ($contents = fread($stream, 255))==false) {
+            echo "\n".date('H:i:s')." Closing thread: ".$this->commandLines[$id];
+            DebMes("Closing thread: ".$this->commandLines[$id]);
             fclose($this->pipes[$id][0]);
             fclose($this->pipes[$id][1]);
             proc_close($this->handles[$id]);
-            echo "\n".date('H:i:s')." Closing thread: ".$this->commandLines[$id];
-            DebMes("Closing thread: ".$this->commandLines[$id]);
             unset($this->handles[$id]);
             unset($this->streams[$id]);
             unset($this->pipes[$id]);

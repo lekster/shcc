@@ -8,6 +8,9 @@
 */
  
 chdir(dirname(__FILE__));
+require_once ("libraries/common/Config/class.Config.php");
+
+//die('asd');
 
 include_once("./config.php");
 include_once("./lib/loader.php");
