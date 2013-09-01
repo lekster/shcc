@@ -1,0 +1,8 @@
+curl -i -H "Content-Type: application/json" -X POST -d '{"name": "computer"}' http://192.168.1.120/RestApiExample/tonic-master/example/web/hello.json/456
+curl -i -H "Content-Type: application/json" -X POST -d '{"name": "computer"}' http://192.168.1.120/RestApiExample/tonic-master/example/web/hello.json
+
+
+http://192.168.1.120/RestApiExample/tonic-master/example/web/hello/123
+http://192.168.1.120/RestApiExample/tonic-master/example/web/hello
+http://192.168.1.120/RestApiExample/tonic-master/example/web/hello.fr
+http://192.168.1.120/RestApiExample/tonic-master/example/web/hello.fr/test123

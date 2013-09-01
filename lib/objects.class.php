@@ -40,16 +40,22 @@
   $objects=SQLSelect("SELECT ID, TITLE FROM objects WHERE CLASS_ID='".$class_record['ID']."'");
 
   $sub_classes=SQLSelect("SELECT ID, TITLE FROM classes WHERE PARENT_ID='".$class_record['ID']."'");
-  if ($sub_classes[0]['ID']) {
-   $total=count($sub_classes);
-   for($i=0;$i<$total;$i++) {
-    $sub_objects=getObjectsByClass($sub_classes[$i]['TITLE']);
-    if ($sub_objects[0]['ID']) {
-     foreach($sub_objects as $obj) {
-      $objects[]=$obj;
+  //var_dump("SELECT ID, TITLE FROM classes WHERE PARENT_ID='".$class_record['ID']."'");
+  //var_dump($sub_classes);
+  if (isset($sub_classes[0]['ID'])) 
+  {
+     $total=count($sub_classes);
+     for($i=0;$i<$total;$i++) 
+     {
+        $sub_objects=getObjectsByClass($sub_classes[$i]['TITLE']);
+        if ($sub_objects[0]['ID']) 
+        {
+           foreach($sub_objects as $obj) 
+           {
+            $objects[]=$obj;
+           }
+        }
      }
-    }
-   }
   }
 
   /*
@@ -95,20 +101,27 @@
 *
 * @access public
 */
- function setGlobal($varname, $value, $no_linked=0) {
-  $tmp=explode('.', $varname);
-  if ($tmp[1]) {
-   $object_name=$tmp[0];
-   $varname=$tmp[1];
-  } else {
-   $object_name='ThisComputer';
-  }
-  $obj=getObject($object_name);
-  if ($obj) {
-   return $obj->setProperty($varname, $value, $no_linked);
-  } else {
-   return 0;
-  }
+ function setGlobal($varname, $value, $no_linked=0) 
+ {
+    $tmp=explode('.', $varname);
+    if (isset($tmp[1])) 
+    {
+     $object_name=$tmp[0];
+     $varname=$tmp[1];
+    } 
+    else 
+    {
+     $object_name='ThisComputer';
+    }
+    $obj=getObject($object_name);
+    if ($obj) 
+    {
+     return $obj->setProperty($varname, $value, $no_linked);
+    } 
+    else 
+    {
+     return 0;
+    }
  }
 
 /**

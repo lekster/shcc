@@ -41,6 +41,8 @@
 */
   var $dbh;
 
+  protected static $instance;
+
   //protected $dbConnection;
 // --------------------------------------------------------------------   
 /**
@@ -63,6 +65,13 @@
    $this->dbName=$database;
    $this->Connect();
   }   
+
+  public static function getInstance()
+  {
+    if (is_null(self::$instance))
+      self::$instance = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
+    return self::$instance;
+  }
 
 // --------------------------------------------------------------------   
 /**
@@ -342,7 +351,7 @@
 */
  function SQLExec($query) {
   if (($query{0}=="#") || ($query=="")) return;
-  global $db;
+    $db = mysql::getInstance(); 
   return $db->Exec($query);
  }
 // --------------------------------------------------------------------   
@@ -354,7 +363,7 @@
 * @return string correct string
 */
  function DbSafe($in) {
-  global $db;
+    $db = mysql::getInstance(); 
   return $db->DbSafe($in);
  }
 
@@ -369,7 +378,7 @@
 * @return array execution result
 */
  function SQLSelect($query) {
-  global $db;
+    $db = mysql::getInstance(); 
   return $db->Select($query);
  }
 
@@ -384,8 +393,12 @@
 * @return array execution result
 */
  function SQLSelectOne($query) {
-  global $db;
-  return $db->SelectOne($query);
+  //global $db;
+  //return $db->SelectOne($query);
+  $db = mysql::getInstance(); 
+  $res = $db->SelectOne($query);
+  return $res;
+
  }
 
 // --------------------------------------------------------------------   
@@ -400,7 +413,7 @@
 * @return execution result (0 - if failed, INSERT ID - if succeed)
 */
  function SQLInsert($table, &$record) {
-  global $db;
+    $db = mysql::getInstance(); 
   return $db->Insert($table, $record);
  }
 
@@ -415,7 +428,7 @@
 * @global object mysql database object
 */
  function SQLUpdate($table, $record) {
-  global $db;
+    $db = mysql::getInstance(); 
   return $db->Update($table, $record);
  }
 
@@ -430,7 +443,7 @@
 * @global object mysql database object
 */
  function SQLUpdateInsert($table, &$record) {
-  global $db;
+    $db = mysql::getInstance(); 
   if (IsSet($record["ID"])) {
    return $db->Update($table, $record);
   } else {

@@ -1,0 +1,9 @@
+
+Для подключения API эксплорера необходимо создать симлинк на /home/projects/points/[имя проекта]/pbr-lib-common/src/Restler/explorer/
+в директории с точкой входа API, тогда эксплорер станет доступен по адресу
+http://base_url/explorer
+
+например:
+[asmirnov@fenrir _001_helloworld]$ pwd
+/home/asmirnov/workspace/pbr-wserv-sms-rpc/htdocs/Restler/public/examples/_001_helloworld
+ln -s  /home/asmirnov/points/pbr-wserv-sms-rpc/pbr-lib-common/src/Restler/explorer/ ./explorer

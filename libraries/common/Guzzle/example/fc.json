@@ -1,0 +1,41 @@
+{
+    "name": "Frod control api",
+    "apiVersion": "1",
+    "description": "Frod control",
+    "operations": {
+        
+        "Add": {
+            "httpMethod": "POST",
+            "uri": "http://pbr-wserv-fc.vps8230.mtu.immo/black-list",
+            "summary": "Add user to black list",
+            "responseClass": "AddOutput",
+            "parameters": {
+                "service_name": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "request_data": {
+                    "location": "json",
+                    "type": "string"
+                }
+            }
+        }
+        
+    },
+    "models": {
+        
+        "AddOutput": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "message": {
+                    "location": "json",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
