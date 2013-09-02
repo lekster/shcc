@@ -9,6 +9,9 @@
 
    include_once("./config.php");
    include_once("./lib/loader.php");
+   //require_once ("class.Facade.php");
+   //$facade = Majordomo_Facade::getInstance("./config/current/global.php");
+   
    include_once(DIR_MODULES."panel.class.php");
 
    $session=new session("prj");

@@ -9,6 +9,8 @@
 
 include_once("./config.php");
 include_once("./lib/loader.php");
+//require_once ("class.Facade.php");
+//$facade = Majordomo_Facade::getInstance("./config/current/global.php");
 
 // start calculation of execution time
 startMeasure('TOTAL'); 
