@@ -49,7 +49,7 @@ return array(
                 '<default>' => array(
                     'Implementation' => 'Logger',
                     'ConstructMethod' => '#',
-                    'ConstructParams' => array("/home/projects/data/pbr-wserv-sms-rpc/logs/callback_sender.log", 0),
+                    'ConstructParams' => array("/tmp/1.log", 0),
                     'IsPersistent' => true,
                 )
             ),

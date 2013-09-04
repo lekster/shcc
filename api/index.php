@@ -16,10 +16,10 @@ include 'Say.php';
 //include '../../../../../bootstrap.php';
 chdir(dirname(dirname(__FILE__)));
 require_once ("libraries/common/Restler/vendor/restler.php");
-
-
-//require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
+
+require_once ("class.Facade.php");
+$facade = Majordomo_Facade::getInstance("./config/current/global.php");
 
 $r = new Restler();
 //$r = new Restler(true);

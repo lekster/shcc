@@ -2,7 +2,6 @@
 
 require_once 'libraries/common/Doctrine/Common/ClassLoader.php';
 
-
 use Doctrine\Common\ClassLoader,
    Worker\CronWorker,
    Doctrine\ORM\Tools\Setup,
@@ -48,6 +47,7 @@ class Majordomo_Facade
    protected function __construct($configFilePath)
    {
       $this->config = new \Immo_MobileCommerce_Config($configFilePath);
+      $this->logger = $this->config->getIOCObject('Logger');
       $this->initDBAL();
       $this->configurate();
       $this->autoload(); 
@@ -183,6 +183,72 @@ class Majordomo_Facade
       return $this->dbConnection;
    }
 
+   public function getLogger()
+   {
+      return $this->logger;
+   }
+
+   public function getConfig()
+   {
+      return $this->config;
+   }
+
+   public function setPropertyToObjectByName($objectName, $propertyName, $propertyVal, $isNeedToUpdateLinked = true)
+   {
+      $this->logger->debug("setPropertyToObjectByName",  $objectName."|".$propertyName."|".$propertyVal."|".var_export($isNeedToUpdateLinked, true));
+      if (is_null($objectName))
+        $objectName = 'ThisComputer';
+      $obj=getObject($objectName);
+      
+      $this->logger->debug("Object", $obj);
+      if ($obj) 
+      {
+        return $obj->setProperty($propertyName, $propertyVal, !$isNeedToUpdateLinked);
+      } 
+      else 
+      {
+        return 0;
+      }
+  }
+
+  
+
+
+  public function getPropertyToObjectByName($objectName, $propertyName)
+   {
+
+      /*
+        function getObject($name) {
+        $rec=SQLSelectOne("SELECT * FROM objects WHERE TITLE LIKE '".DBSafe($name)."'");
+        if ($rec['ID']) {
+         include_once(DIR_MODULES.'objects/objects.class.php');
+         $obj=new objects();
+         $obj->id=$rec['ID'];
+         $obj->loadObject($rec['ID']);
+         return $obj;
+        }
+        return 0;
+       }
+
+      */
+
+      $this->logger->debug("getPropertyToObjectByName",  $objectName."|".$propertyName);
+      if (is_null($objectName))
+        $objectName = 'ThisComputer';
+      $obj=getObject($objectName);
+      
+      $this->logger->debug("Object", $obj);
+      if ($obj) 
+      {
+        return $obj->getProperty($propertyName);
+      } 
+      else 
+      {
+        return 0;
+      }
+  }
+
+
    /*
 
    
@@ -203,5 +269,4 @@ class Majordomo_Facade
 
 
 }
-
-
+?>
