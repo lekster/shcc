@@ -11,7 +11,8 @@ sudo chmod 777 -R /home/projects/data/majordomo/log
 rm -f /tmp/deploy_image.tar
 git archive --format tar -o /tmp/deploy_image.tar $1;
 tar -C /home/projects/php/projects/stable/majordomo/ -xvf /tmp/deploy_image.tar
-echo $1 > /home/projects/php/projects/stable/majordomo/deployment.marker
+echo `date` > /home/projects/php/projects/stable/majordomo/deployment.marker
+echo 'tag version:':$1 >> /home/projects/php/projects/stable/majordomo/deployment.marker
 rm -f /tmp/deploy_image.tar
 
 rm -rf /home/projects/php/projects/stable/majordomo/config/current
