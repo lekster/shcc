@@ -395,7 +395,7 @@ function usual(&$out) {
    for($i=0;$i<$total;$i++) {
     $prec=$properties[$i];
     $old_value=$prec['VALUE'];
-    $value=$ow->get($prec['PATH'],OWNET_MSG_READ,false);
+    $value=trim($ow->get($prec['PATH'],OWNET_MSG_READ,false));
 
     if (!$value) {
      $device='/'.$prec['UDID'];
@@ -529,8 +529,9 @@ function updateDisplay($id) {
      $prec['ID']=SQLInsert('owproperties', $prec);
     }
     $old_value=$prec['VALUE'];
-    $value=$ow->get($properties[$ip],OWNET_MSG_READ,false);
+    $value=trim($ow->get($properties[$ip],OWNET_MSG_READ,false));
     if (!is_null($value) && $old_value!=$value) {
+    //if (1) {
      // value updated
      $changed=1;
      $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
@@ -540,7 +541,11 @@ function updateDisplay($id) {
      //$rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
      SQLUpdate('owdevices', $rec);
      if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
-      sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], 1);
+      //!!!!!!!!!! вот тут обновляется св-во глоб объекта
+      //var_dump('set');
+      $facade = Majordomo_Facade::getInstance();
+      $facade->setPropertyToObjectByName($prec['LINKED_OBJECT'], $prec['LINKED_PROPERTY'], $prec['VALUE'], false);
+      //sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], 1);
      }
     }
    }

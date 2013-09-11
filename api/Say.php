@@ -33,16 +33,55 @@ class Say {
     /**
      * @param string $objectName  {@from query}
      * @param string $propertyName {@from query}
-     * @param string $value {@from query}
      * @return array
      */
-    function getObjectProperty($objectName, $propertyName, $value)
+    function getObjectProperty($objectName, $propertyName)
     {
         //ThisComputer
         //1w_temp    
 
         $facade = Majordomo_Facade::getInstance();
         $prop = $facade->getPropertyToObjectByName($objectName, $propertyName);
+        //$db = $facade->getDbConnection();
+        //$set =  $db->getRepository('DbEntity\\SettingsEntity')->findAll();
+        //var_dump($set);die();
+        return (array('result'=> $prop));
+        return array_sum(func_get_args());
+    }
+
+    /**
+     * @param string $objectName  {@from query}
+     * @param string $propertyName {@from query}
+     * @param string $value {@from query}
+     * @return array
+     */
+    function setObjectProperty($objectName, $propertyName, $value)
+    {
+        //ThisComputer
+        //1w_temp    
+
+        $facade = Majordomo_Facade::getInstance();
+        $prop = $facade->setPropertyToObjectByName($objectName, $propertyName, $value, false);
+        //$db = $facade->getDbConnection();
+        //$set =  $db->getRepository('DbEntity\\SettingsEntity')->findAll();
+        //var_dump($set);die();
+        return (array('result'=> $prop));
+        return array_sum(func_get_args());
+    }
+
+    /**
+     * @param string $objectName  {@from query}
+     * @param string $propertyName {@from query}
+     * @param string $value {@from query}
+     * @return array
+     */
+    function setObjectPropertyLinked($objectName, $propertyName, $value)
+    {
+        //ThisComputer
+        //1w_temp    
+
+        $facade = Majordomo_Facade::getInstance();
+        $prop = $facade->setPropertyToObjectByName($objectName, $propertyName, $value, true);
         //$db = $facade->getDbConnection();
         //$set =  $db->getRepository('DbEntity\\SettingsEntity')->findAll();
         //var_dump($set);die();

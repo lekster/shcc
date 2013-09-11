@@ -177,7 +177,7 @@ class CycleWork extends \Worker\CronWorker
       {
          if (file_exists($path)) 
          {
-            DebMes("Starting ".$path." ... ");
+            $this->logger->debug("Starting ".$path." ... ");
             echo "Starting ".$path." ... ";
          
             if ((preg_match("/_X/", $path))) 
@@ -255,7 +255,11 @@ class CycleWork extends \Worker\CronWorker
 
       while (false !== ($result = $threads->iteration())) 
       {
-         if (!empty($result))  echo $result."\r\n";
+         if (!empty($result))  
+         {  
+            $this->logger->debug("RESULT", $result);
+            echo $result."\r\n";
+         }
       }
 
       // closing database connection

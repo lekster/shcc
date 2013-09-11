@@ -7,13 +7,19 @@ use Doctrine\Common\ClassLoader,
    Doctrine\ORM\Tools\Setup,
    Doctrine\ORM\EntityManager;
 
+use DbEntity\SettingsEntity;
 
 require_once 'libraries/common/CronLock/class.CronLock.php';
 require_once 'libraries/common/Config/class.Config.php';
 require_once 'libraries/common/class.Exception.php';
 include_once("lib/threads.php");
 
-require_once 'DbEntity/SettingsEntity.php';
+
+require_once 'libraries/common/Analytics/Statsd/class.AnalyticsStatsdSender.php';
+
+
+//require_once 'DbEntity/SettingsEntity.php';
+
 
 //require_once 'libraries/common/ServiceLocator/class.ServiceLocator.php';
 
@@ -66,6 +72,8 @@ class Majordomo_Facade
    protected function initDBAL($params = null)
    {
       $classLoader = new ClassLoader('Doctrine', 'libraries/common/');
+      $classLoader->register();
+      $classLoader = new ClassLoader('DbEntity', './');
       $classLoader->register();
       $doctrineConfig = Setup::createAnnotationMetadataConfiguration(array("./DbEntity/"), true);
       $conn = $this->config->get('DoctrineDatasourceDb', 'Datasource');
@@ -144,6 +152,8 @@ class Majordomo_Facade
         closedir($libDir);
       }
 
+      require_once(DIR_MODULES.'objects/objects.class.php');
+
    }
 
 
@@ -203,7 +213,13 @@ class Majordomo_Facade
       $this->logger->debug("Object", $obj);
       if ($obj) 
       {
-        return $obj->setProperty($propertyName, $propertyVal, !$isNeedToUpdateLinked);
+        $ret = $obj->setProperty($propertyName, $propertyVal, !$isNeedToUpdateLinked);
+        if (is_numeric($propertyVal))
+        {
+          $a = new PBR_Analytics_Statsd_Sender('192.168.1.120', '8125');
+          $a->gauge("{$objectName}.{$propertyName}", $propertyVal);
+        }
+        return $ret;    
       } 
       else 
       {
@@ -232,20 +248,37 @@ class Majordomo_Facade
 
       */
 
+   
+
       $this->logger->debug("getPropertyToObjectByName",  $objectName."|".$propertyName);
       if (is_null($objectName))
         $objectName = 'ThisComputer';
-      $obj=getObject($objectName);
-      
-      $this->logger->debug("Object", $obj);
-      if ($obj) 
-      {
-        return $obj->getProperty($propertyName);
-      } 
-      else 
-      {
-        return 0;
+      //$obj=getObject($objectName);
+      $object = $this->dbConnection->getRepository('DbEntity\\ObjectsEntity')->//findAll();
+          findOneBy(array('TITLE' => $objectName));
+      //var_dump($object);die();
+      if (is_object($object))
+      {    
+        $obj=new objects();
+        $obj->id = $object->ID;
+        $obj->loadObject($object->ID);    
+        $this->logger->debug("Object", $obj);
+        if ($obj) 
+        {
+          $ret = $obj->getProperty($propertyName);
+          if (is_numeric($ret))
+          {
+            $a = new PBR_Analytics_Statsd_Sender('192.168.1.120', '8125');
+            $a->gauge("{$objectName}.{$propertyName}", $ret);
+          }
+          return $ret;
+        } 
+        else 
+        {
+          return 0;
+        }
       }
+      return 0;
   }
 
 
