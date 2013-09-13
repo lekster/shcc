@@ -8,10 +8,10 @@
 */
 
 
- Define('DB_HOST', 'localhost');
- Define('DB_NAME', 'majordomo1');
- Define('DB_USER', 'root');
- Define('DB_PASSWORD', 'root');
+ Define('DB_HOST', 'localhost_123');
+ Define('DB_NAME', 'majordomo_devel_notwork');
+ Define('DB_USER', 'root_123');
+ Define('DB_PASSWORD', 'root_123');
 
  Define('DIR_TEMPLATES', "./templates/");
  Define('DIR_MODULES', "./modules/");

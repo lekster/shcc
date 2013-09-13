@@ -5,12 +5,12 @@
  chdir('../');
 
 
- include_once("./config.php");
+require_once ("class.Facade.php");
+$facade = Majordomo_Facade::getInstance("./config/current/global.php");
  include_once("./lib/loader.php");
 
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
- include_once("./load_settings.php");
 
  // OPTIMIZATION RULES
 

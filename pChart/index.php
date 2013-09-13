@@ -5,15 +5,13 @@
      Example1 : A simple line chart
  */
 
- include_once("./config.php");
  include_once("./lib/loader.php");
-
+require_once ("class.Facade.php");
+$facade = Majordomo_Facade::getInstance("./config/current/global.php");
 
  include_once(DIR_MODULES."application.class.php");
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
- include_once("./load_settings.php");
-
 
 
  // Standard inclusions      

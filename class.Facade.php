@@ -86,10 +86,18 @@ class Majordomo_Facade
    //get from config.php
    protected function configurate()
    {
+      /*
        Define('DB_HOST', 'localhost');
        Define('DB_NAME', 'majordomo1');
        Define('DB_USER', 'root');
        Define('DB_PASSWORD', 'root');
+      */
+       $conn = $this->config->get('DoctrineDatasourceDb', 'Datasource');
+
+       Define('DB_HOST', $conn['host']);
+       Define('DB_NAME', $conn['dbname']);
+       Define('DB_USER', $conn['user']);
+       Define('DB_PASSWORD', $conn['password']);
 
        Define('DIR_TEMPLATES', "./templates/");
        Define('DIR_MODULES', "./modules/");

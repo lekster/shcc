@@ -9,6 +9,9 @@
 * @package MajorDoMo
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 */
+include_once("./lib/loader.php");
+require_once ("class.Facade.php");
+$facade = Majordomo_Facade::getInstance("./config/current/global.php");
 
 if (!preg_match('/\/$/', $_SERVER["REQUEST_URI"])) 
    $file = basename($_SERVER["REQUEST_URI"]);
@@ -29,8 +32,6 @@ if (preg_match("/\?(.*?)$/", $_SERVER["REQUEST_URI"], $matches))
 $file = preg_replace("/\.htm.*$/","", $file);
 
 if ($file!='') $fake_doc=$file;
-
-include_once("./config.php");
 
 // use this array for URL conversion rules
 $requests = array(
@@ -68,9 +69,6 @@ if (preg_match('/^moved:(.+)/is', $link, $matches))
    header("Location:" . $matches[1]);
    exit;
 }
-
-include_once("./config.php");
-include_once("./lib/loader.php");
 
 if ($link!='') 
 {

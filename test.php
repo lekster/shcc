@@ -7,18 +7,12 @@
 * @version 1.3
 */
 
-include_once("./config.php");
+require_once ("class.Facade.php");
+$facade = Majordomo_Facade::getInstance("./config/current/global.php");
 include_once("./lib/loader.php");
 
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
-
-// get settings
-$settings = SQLSelect('SELECT NAME, VALUE FROM settings');
-$total    = count($settings);
-
-for ($i = 0; $i < $total; $i ++)
-   Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
 
 // language selection by settings
 if (SETTINGS_SITE_LANGUAGE && file_exists(ROOT . 'languages/' . SETTINGS_SITE_LANGUAGE . '.php')) 

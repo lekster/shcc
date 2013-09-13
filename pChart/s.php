@@ -85,8 +85,9 @@ pict1c
  
 //---------------------------- Standard inclusions    
 
-include_once("./config.php");
 include_once("./lib/loader.php");
+require_once ("class.Facade.php");
+$facade = Majordomo_Facade::getInstance("./config/current/global.php");
 include_once(DIR_MODULES."application.class.php");
 include("./pChart/pData.class");   
 include("./pChart/pChart.class");  
@@ -94,12 +95,6 @@ include("./pChart/pChart.class");
 //---------------------------- MySQL
 
 $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
-$settings=SQLSelect("SELECT NAME, VALUE FROM settings");
-
-$total=count($settings);
-for($i=0;$i<$total;$i++) {
-  Define('SETTINGS_'.$settings[$i]['NAME'], $settings[$i]['VALUE']);
-}
 
 //---------------------------- light/black
 

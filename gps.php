@@ -7,8 +7,9 @@
 * @version 1.1
 */
 
-include_once("./config.php");
 include_once("./lib/loader.php");
+require_once ("class.Facade.php");
+$facade = Majordomo_Facade::getInstance("./config/current/global.php");
 
 // start calculation of execution time
 startMeasure('TOTAL'); 
@@ -19,8 +20,6 @@ $session = new session("prj");
 
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
-
-include_once("./load_settings.php");
 
 if ($_REQUEST['location']) 
 {

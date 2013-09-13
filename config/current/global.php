@@ -23,7 +23,7 @@ return array(
             'driver'   => 'pdo_mysql',
             'user'     => 'root',
             'password' => 'root',
-            'dbname'   => 'majordomo1',
+            'dbname'   => 'majordomo_devel',
         ),
 
 
@@ -59,7 +59,7 @@ return array(
                     'Implementation' => 'CronLock',
                     'ConstructMethod' => '#',
                     'ConstructParams' => array(
-                        '/home/projects/data/pbr-wserv-sms-rpc/lock/%s.%s.%s.%s.lock',
+                        '/tmp/%s.%s.%s.%s.lock',
                         '##Logger',
                         "asmirnov@immo.ru",
                         true,

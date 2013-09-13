@@ -7,16 +7,15 @@
 * @version 1.3
 */
 
-   include_once("./config.php");
    include_once("./lib/loader.php");
-   //require_once ("class.Facade.php");
-   //$facade = Majordomo_Facade::getInstance("./config/current/global.php");
+   require_once ("class.Facade.php");
+   $facade = Majordomo_Facade::getInstance("./config/current/global.php");
    
    include_once(DIR_MODULES."panel.class.php");
 
    $session=new session("prj");
    $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
-   include_once("./load_settings.php");
+   //include_once("./load_settings.php");
 
    include_once(DIR_MODULES."control_modules/control_modules.class.php");
    $cl=new control_modules();

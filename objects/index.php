@@ -43,17 +43,15 @@
  // NORMAL HANDLER
  chdir(dirname(__FILE__).'/..');
 
- include_once("./config.php");
  include_once("./lib/loader.php");
-
+ require_once ("class.Facade.php");
+ $facade = Majordomo_Facade::getInstance("./config/current/global.php");
 
  startMeasure('TOTAL'); // start calculation of execution time
 
  include_once(DIR_MODULES."application.class.php");
 
  $db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
- include_once("./load_settings.php");
-
 
  if ($argv[1]!='') {
   //echo date('Y-m-d H:i:s')." command line call: ".$argv[1]."\n";
