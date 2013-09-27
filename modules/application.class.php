@@ -13,6 +13,13 @@
   var $action;
   var $member_id;
 
+  public $popup = null;
+  public $ajax = null;
+  public $doc_name = null;
+  public $doc;
+  public $doc_id;
+  public $parent_item;
+
 // --------------------------------------------------------------------
   function application() {
    global $session;
@@ -172,7 +179,7 @@ function getParams() {
    $users=SQLSelect("SELECT * FROM users ORDER BY NAME");
    $total=count($users);
    for($i=0;$i<$total;$i++) {
-    if ($users[$i]['USERNAME']==$session->data['USERNAME']) {
+    if ($users[$i]['USERNAME']==@$session->data['USERNAME']) {
      $users[$i]['SELECTED']=1;
      $out['USER_TITLE']=$users[$i]['NAME'];
      $out['USER_AVATAR']=$users[$i]['AVATAR'];
@@ -205,7 +212,7 @@ function getParams() {
     }
    }
 
-   if ($session->data["AUTHORIZED"]) {
+   if (@$session->data["AUTHORIZED"]) {
     $out['AUTHORIZED_ADMIN']=1;
    }
 
@@ -234,7 +241,7 @@ function getParams() {
    if ($this->doc) $this->doc_id=$this->doc;
    $out["DOC_ID"]=$this->doc_id;
 
-   if ($session->data['MY_MEMBER']) {
+   if (isset($session->data['MY_MEMBER'])) {
     $out['MY_MEMBER']=$session->data['MY_MEMBER'];
    }
 
@@ -244,7 +251,7 @@ function getParams() {
    $days=array('Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота');
    
    $out['TODAY']=$days[date('w')].', '.date('d.m.Y');
-   Define(TODAY, $out['TODAY']);
+   Define('TODAY', $out['TODAY']);
 
    global $ajt;
    if ($ajt=='') {

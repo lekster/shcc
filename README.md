@@ -1,5 +1,7 @@
-majordomo
+majordomo clone, NOT WORKED NOW!
 =========
+
+See worked original at http://smartliving.ru/
 
 Home automation platform.
 

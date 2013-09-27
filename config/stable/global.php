@@ -24,6 +24,7 @@ return array(
             'user'     => 'root',
             'password' => 'root',
             'dbname'   => 'majordomo1',
+            'host' => '192.168.1.120',
         ),
 
 
@@ -37,10 +38,11 @@ return array(
         ),*/    
     ),   
 
-
       'Global' => array
       (
             'McBaseUrl' => 'http://vps7151.mtu.immo/mobile-commerce-rpc-partner-stable/htdocs/pbc.php?service=%login%&password=%password%&phone=%msisdn%&price=%sum%&forceGuid=%transaction_guid%&msg=%msg%',
+            'BackupDir' => '/home/projects/data/majordomo/backup/'
+
       ),
 
 	  'IOC' => array(
@@ -91,7 +93,7 @@ return array(
 			'<default>' => array(
 				'Implementation' => 'AnalyticsStatsdSender',
 				'ConstructMethod' => '#',
-				'ConstructParams' => array('vps8163.mtu.immo', 8125),
+				'ConstructParams' => array('192.168.1.120', 8125),
 				'IsPersistent' => true,
 				),
 			),
@@ -167,7 +169,7 @@ return array(
 
         'AnalyticsStatsdSender' => array(
             '<default>' => array(
-                'ImplementationClassFilepath' => 'pbr-lib-common/src/Analytics/Statsd/class.AnalyticsStatsdSender.php',
+                'ImplementationClassFilepath' => 'libraries/common/Analytics/Statsd/class.AnalyticsStatsdSender.php',
                 'ImplementationClassName' => 'PBR_Analytics_Statsd_Sender',
             ),
         ),

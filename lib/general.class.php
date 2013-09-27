@@ -83,9 +83,14 @@ if (get_magic_quotes_gpc())
 }
 
 
+//тут определяются глобальные переменные
+//чтож вынесем это дело в фасад, где заведем отдельный массив для этого и геттер с сеттером
+
  foreach($params as $k=>$v) {
   ${$k}=$v;
  }
+
+ ///var_dump($design);die();
 
  if (count($_FILES)>0) {
   $ks=array_keys($_FILES);

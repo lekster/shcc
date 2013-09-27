@@ -20,9 +20,9 @@
   // FIELDS ORDER
   global $sortby;
   if (!$sortby) {
-   $sortby=$session->data['classes_sort'];
+   $sortby= isset($session->data['classes_sort']) ? $session->data['classes_sort'] : null;
   } else {
-   if ($session->data['classes_sort']==$sortby) {
+   if (isset($session->data['classes_sort']) && $session->data['classes_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
     } else {
@@ -41,11 +41,11 @@
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
     $objects=SQLSelect("SELECT ID, TITLE, DESCRIPTION FROM objects WHERE CLASS_ID='".$res[$i]['ID']."'");
-    if ($objects[0]['ID']) {
+    if (isset($objects[0]['ID'])) {
      $total_o=count($objects);
      for($o=0;$o<$total_o;$o++) {
       $methods=SQLSelect("SELECT ID, TITLE FROM methods WHERE OBJECT_ID='".$objects[$o]['ID']."'");
-      if ($methods[0]['ID']) {
+      if (isset($methods[0]['ID'])) {
        $objects[$o]['METHODS']=$methods;
       }
      }

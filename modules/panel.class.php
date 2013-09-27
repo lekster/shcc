@@ -11,6 +11,8 @@
  class panel extends module {
 
   var $action;
+  public $print;
+  public $ajax;
 
 // --------------------------------------------------------------------
   function panel() {
@@ -56,7 +58,7 @@ function getParams() {
    $this->authorized=1;
   }
 
-  if ($this->print || $_GET['print']) {
+  if ($this->print || @$_GET['print']) {
    $this->print=1;
    $out['PRINT']=1;
   }

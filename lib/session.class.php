@@ -40,7 +40,7 @@
 
     // setting expiration time for session (the easiest way)
     $expiretime = 60*60*1; // 2 hours
-    if ($_SESSION['expire'] < time()) {
+    if (isset($_SESSION['expire']) && $_SESSION['expire'] < time()) {
      $_SESSION['DATA']='';
     }
     $_SESSION['expire'] = time()+$expiretime;

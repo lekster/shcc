@@ -1,6 +1,6 @@
 <?php
 /**
-* ���������� 
+* Ñîõðàíåíèå 
 *
 * Saverestore
 *
@@ -22,6 +22,7 @@ class saverestore extends module {
 * @access private
 */
 function saverestore() {
+  parent::__construct();
   $this->name="saverestore";
   $this->title="<#LANG_MODULE_SAVERESTORE#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
@@ -1242,10 +1243,67 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
 */
  function dump(&$out) {
   
-  
-  if (mkdir(ROOT.'saverestore/temp', 0777)) {   
+  $backupDir = $this->configurator->get("BackupDir", "Global");
+  //var_dump($backupDir);
+  //var_dump("line" . __LINE__);
+  //global $design;
+  //var_dump($design);
+  //а вообще на подобную операцию надо создавать JOB , а тут только отслеживать его статус
+  //test
+
+ $design = $this->request->getParam('design');
+
+  //die($design);
+
+  $tmpBackupDir = $backupDir . '/temp/';
+  $a = exec("rm -rf " . $tmpBackupDir); 
+  //var_dump($tmpBackupDir);
+  //$b =mkdir($tmpBackupDir, 0777);
+  //var_dump($b); 
+  if (mkdir($tmpBackupDir, 0777)) {  
+   
+   //ALLL
+    $this->copyTree(ROOT.'templates', $tmpBackupDir . 'templates');
+    $this->copyTree(ROOT.'img', $tmpBackupDir . 'img');
+    $this->copyTree(ROOT.'js', $tmpBackupDir . 'js');
+   
+    $pt=array('.\css');
+    $this->copyFiles(ROOT, $tmpBackupDir, 0, $pt);
+
+    $pt=array('\.swf');
+    $this->copyFiles(ROOT, $tmpBackupDir, 0, $pt);
+
+    $pt=array('\.htc');
+    $this->copyFiles(ROOT, $tmpBackupDir, 0, $pt);
+
+
+
+
+    $this->copyTree(ROOT.'lib', $tmpBackupDir . 'lib');
+    $this->copyTree(ROOT.'modules', $tmpBackupDir . 'modules');
+
+    $pt=array('\.php');
+    $this->copyFiles(ROOT, $tmpBackupDir, 0, $pt);
+    @unlink($tmpBackupDir . 'config.php');
+
+    $this->copyTree(ROOT.'forum', $tmpBackupDir . 'forum');
+    @unlink($tmpBackupDir . 'config.php');
+
+
+    $this->copyTree(ROOT.'cms', $tmpBackupDir . 'cms');
+    $this->backupdatabase($tmpBackupDir . 'dump.sql');
+    //die('ASD'); 
+    //$this->copyTree(ROOT.'photos', ROOT.'saverestore/temp/photos');
+    $tar_name = date('Y-m-d_H-i-s').'.tgz';
+    //chdir($tmpBackupDir);
+    exec('tar cvzf ' . $backupDir . "/" . $tar_name. " $tmpBackupDir");
+    exec("rm -rf " . $tmpBackupDir);
+    //chdir('../../');
+
+
+/*
    // DESIGN
-   global $design;
+   
    if ($design) {
     $tar_name.='design_';
     $this->copyTree(ROOT.'templates', ROOT.'saverestore/temp/templates');
@@ -1265,7 +1323,8 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
    }
 
    // CODE
-   global $code;
+   //global $code;
+    $code = $this->request->getParam('code');
    if ($code) {
     $tar_name.='code_';
     
@@ -1286,7 +1345,8 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
    }
 
    // DATA
-   global $data;
+   //global $data;
+   $data = $this->request->getParam('data');
    if ($data) {
     $tar_name.='data_';
     $this->copyTree(ROOT.'cms', ROOT.'saverestore/temp/cms');
@@ -1294,7 +1354,8 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
    }
 
    // FILES
-   global $files;
+   //global $files;
+   $files = $this->request->getParam('files');
    if ($files) {
     $tar_name.='files_';
     //$this->copyTree(ROOT.'photos', ROOT.'saverestore/temp/photos');
@@ -1320,7 +1381,11 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
     chdir('../../');
    }
 
-
+ */
+  }
+  else
+  {
+    die("UNABLE TO CREATE BACKUP DIR");
   }
  }
 
@@ -1508,7 +1573,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose) {
  if ($dir = @opendir($source)) { 
   while (($file = readdir($dir)) !== false) { 
     if (Is_Dir($source."/".$file) && ($file!='.') && ($file!='..')) {
-     //$res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
+     $res=$this->copyTree($source."/".$file, $destination."/".$file, $over, $patterns);
     } elseif (Is_File($source."/".$file) && (!file_exists($destination."/".$file) || $over)) {
      if (!is_array($patterns)) {
       $ok_to_copy=1;

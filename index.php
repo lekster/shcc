@@ -23,7 +23,7 @@ $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME);
 
 //include_once("./load_settings.php");
 
-if (!$_GET['nocache']) 
+if (!@$_GET['nocache']) 
 {
    // use cache?
    $use_caching = 0; 
@@ -36,6 +36,7 @@ else
 // 60 minutes cache expiration time
 $cache_expire  = 60*60; 
 $cached_result = '';
+$cache_filename = null;
 
 $req_url = $_SERVER['REQUEST_URI'];
  
@@ -43,6 +44,7 @@ if ($req_url == '/')
 {
    $req_url='/index.html';
 }
+
 
 if ($use_caching && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) && $_SERVER['REQUEST_METHOD']!='POST') 
 {
@@ -70,7 +72,9 @@ if ($cached_result=='')
    }
 
    $app=new application();
+   //$app->getParams();
 
+   global $md;
    if ($md!=$app->name) 
    {
       $app->restoreParams();
@@ -85,7 +89,7 @@ if ($cached_result=='')
       $fake_doc='';
    }
 
-   if ($app->action == '' && $fake_doc != "" && file_exists(DIR_MODULES.'cms_docs/cms_docs.class.php')) 
+   if ($app->action == '' && isset($fake_doc) && $fake_doc != "" && file_exists(DIR_MODULES.'cms_docs/cms_docs.class.php')) 
    {
       $tmp = SQLSelectOne("SELECT ID FROM cms_docs WHERE NAME='".DBSafe($fake_doc)."'");
       
@@ -141,7 +145,7 @@ if (preg_match_all('/<!-- placecut (\w+?) -->/is', $result, $matches))
 // END: begincut endcut placecut
 
 // BEGIN: filter output
-if ($filterblock!='') 
+if (isset($filterblock) && $filterblock!='') 
 {
    preg_match('/<!-- begin_data \[' . $filterblock . '\] -->(.*?)<!-- end_data \[' . $filterblock . '\] -->/is', $result, $match);
    $result=$match[1];

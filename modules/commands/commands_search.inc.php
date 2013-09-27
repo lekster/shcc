@@ -28,7 +28,7 @@
   }
 
 
-  if ($_GET['parent']) {
+  if (@$_GET['parent']) {
    $qry.=" AND (commands.ID='".(int)$_GET['parent']."' OR commands.PARENT_ID='".$_GET['parent']."')";
    $out['IFRAME_MODE']=1;
   }
@@ -46,7 +46,7 @@
    $out['ONE_ITEM_MODE']=1;
    $this->pda=1;
    $out['PDA']=1;
-  } elseif (!$_GET['parent']) {
+  } elseif (!isset($_GET['parent']) || !$_GET['parent']) {
    $qry.=" AND PARENT_ID=0";
   }
   }
@@ -62,9 +62,9 @@
   // FIELDS ORDER
   global $sortby;
   if (!$sortby) {
-   $sortby=$session->data['commands_sort'];
+   $sortby = isset($session->data['commands_sort']) ? $session->data['commands_sort'] : null;
   } else {
-   if ($session->data['commands_sort']==$sortby) {
+   if (isset($session->data['commands_sort']) && $session->data['commands_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
     } else {
@@ -95,7 +95,7 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
-   if ($res[$i+1]['INLINE']) {
+   if (isset($res[$i+1]['INLINE'])) {
     $res[$i]['INLINE']=1;
    }
 

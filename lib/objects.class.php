@@ -80,7 +80,7 @@
 */
  function getGlobal($varname) {
   $tmp=explode('.', $varname);
-  if ($tmp[1]) {
+  if (@$tmp[1]) {
    $object_name=$tmp[0];
    $varname=$tmp[1];
   } else {

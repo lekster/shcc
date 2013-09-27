@@ -12,6 +12,15 @@ Define('DEF_TYPE_OPTIONS', 'html=HTML Code|app=Application|url=URL'); // options
 //
 //
 class layouts extends module {
+
+public $data_source;  
+public $edit_mode;
+public $mode;
+public $tab;
+public $single_rec;
+public $mobile;
+public $ajax;
+
 /**
 * layouts
 *

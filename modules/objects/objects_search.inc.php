@@ -30,9 +30,9 @@
   // FIELDS ORDER
   global $sortby;
   if (!$sortby) {
-   $sortby=$session->data['objects_sort'];
+   $sortby=isset($session->data['objects_sort']) ? $session->data['objects_sort'] : null;
   } else {
-   if ($session->data['objects_sort']==$sortby) {
+   if (isset($session->data['objects_sort']) && $session->data['objects_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
     } else {

@@ -9,6 +9,16 @@
 //
 //
 class app_player extends module {
+
+public $action;
+public $play;
+public $terminal_id;
+public $view_mode;
+public $edit_mode;
+public $mode;
+public $single_rec;
+public $ajax;
+
 /**
 * player
 *
@@ -181,7 +191,7 @@ function usual(&$out) {
   $terminal['HOST']='localhost';
  }
 
- if (!$play && $session->data['LAST_PLAY']) {
+ if (!$play && isset($session->data['LAST_PLAY'])) {
   $play=$session->data['LAST_PLAY'];
  } elseif ($play) {
   $session->data['LAST_PLAY']=$play;

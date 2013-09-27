@@ -11,6 +11,17 @@
 //
 //
 class objects extends module {
+
+public $data_source;
+public $mode;
+public $tab;
+public $edit_mode;
+public $single_rec;
+public $ajax;
+public $view_mode;
+
+
+
 /**
 * objects
 *

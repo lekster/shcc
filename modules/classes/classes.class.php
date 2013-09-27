@@ -11,6 +11,15 @@
 //
 //
 class classes extends module {
+
+public $view_mode;
+public $single_rec;
+public $ajax;
+public $tab;
+public $mode;
+public $edit_mode;
+public $data_source;
+
 /**
 * classes
 *

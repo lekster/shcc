@@ -141,6 +141,10 @@ class Majordomo_Facade
        //Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt');  // (Optional)
 
 
+       /**********************/
+       //Define('CMS_DESCRIPTION', "1");
+       //Define('CMS_KEYWORDS', "1");
+ 
    }
 
 
@@ -224,7 +228,8 @@ class Majordomo_Facade
         $ret = $obj->setProperty($propertyName, $propertyVal, !$isNeedToUpdateLinked);
         if (is_numeric($propertyVal))
         {
-          $a = new PBR_Analytics_Statsd_Sender('192.168.1.120', '8125');
+          //$a = new PBR_Analytics_Statsd_Sender('192.168.1.120', '8125');
+          $a = $this->config->getIOCObject('AnalyticsStatsdSender');
           $a->gauge("{$objectName}.{$propertyName}", $propertyVal);
         }
         return $ret;    
@@ -276,7 +281,7 @@ class Majordomo_Facade
           $ret = $obj->getProperty($propertyName);
           if (is_numeric($ret))
           {
-            $a = new PBR_Analytics_Statsd_Sender('192.168.1.120', '8125');
+            $a = $this->config->getIOCObject('AnalyticsStatsdSender');
             $a->gauge("{$objectName}.{$propertyName}", $ret);
           }
           return $ret;

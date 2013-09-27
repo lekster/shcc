@@ -30,6 +30,8 @@ class jTemplate {
 */
  var $owner;
 
+public $ajax;
+
 /**
 * Object constructor
 *
@@ -304,7 +306,15 @@ class jTemplate {
    if (defined($matches[1][$i])) {
     $res=str_replace($matches[0][$i], constant($matches[1][$i]), $res);
    } else {
-    $res=str_replace($matches[0][$i], $hash[$matches[1][$i]], $res);
+    if (isset($hash[$matches[1][$i]]))
+    {
+      $res=str_replace($matches[0][$i], $hash[$matches[1][$i]], $res);
+    }
+    else
+    {
+      $res=str_replace($matches[0][$i], '', $res);
+    }
+      
    }
   }
  }
@@ -324,8 +334,8 @@ class jTemplate {
  while (preg_match_all('/\[#begin (.*?)#\](.*?)\[#end \1#\]/is', $res, $matches, PREG_PATTERN_ORDER)) {
   $count_matches_0=count($matches[0]);
   for($i=0;$i<$count_matches_0;$i++) {
-   $var=$hash[$matches[1][$i]];
-   $line1=$matches[2][$i];
+   $var=@$hash[$matches[1][$i]];
+   $line1=@$matches[2][$i];
    $res1="";
 
    if ((Is_array($var)) && (count($var)>0) && (!IsSet($var[0]))) {
@@ -453,11 +463,11 @@ class jTemplate {
       $temp=array();
       $temp=explode("[#else#]", $body);
       $true_part=$temp[0];
-      $false_part=$temp[1];
+      $false_part=isset($temp[1]) ? $temp[1] : '';
       $condition=preg_replace('/^!(\w+)$/', '!IsSet($hash[\'\\1\'])', $condition);
       $condition=preg_replace('/^(\w+)$/', 'IsSet($hash[\'\\1\'])', $condition);
-      $condition=preg_replace('/(\w+)(?=[=!<>])/', '$hash[\'\\1\']', $condition);
-      $condition=preg_replace('/\((\w+)\)/', '($hash[\'\\1\'])', $condition);
+      $condition=preg_replace('/(\w+)(?=[=!<>])/', '@$hash[\'\\1\']', $condition);
+      $condition=preg_replace('/\((\w+)\)/', '(@$hash[\'\\1\'])', $condition);
       $condition=preg_replace('/\]=(?=[^\w=])/', ']==', $condition);
       $str="if ($condition) {\$res1=\$true_part;} else {\$res1=\$false_part;}";     
       eval($str);
@@ -537,10 +547,10 @@ class jTemplate {
 
      // setting other module parameters
      // if current request is to this module, then run get params otherwise get params from encoded query
-     if (($md!=$module_data["name"]) || (($module_data["instance"]!='') && ($module_data["instance"]!=$instance) && ($instance!=''))) {
+     if (($md!=$module_data["name"]) || ((@$module_data["instance"]!='') && (@$module_data["instance"]!=$instance) && ($instance!=''))) {
       // restoring module params from coded string (module should not overwrite this method)
       $code.=$obj."->restoreParams();\n";
-     } elseif (($module_data["name"]==$md) && (($module_data["instance"]=='') || ($module_data["instance"]==$instance) || ($instance==''))) {
+     } elseif (($module_data["name"]==$md) && ((@$module_data["instance"]=='') || (@$module_data["instance"]==$instance) || ($instance==''))) {
       // getting module params from query string (every module should handle this method)
       $code.=$obj."->getParams();\n";
      }
@@ -656,8 +666,17 @@ class jTemplate {
   // [#VARIABLE#] - general variables
   if (preg_match_all('/\[#(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
    $count_matches_1=count($matches[1]);
-   for($i=0;$i<$count_matches_1;$i++) {
-    $res=str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]]), $res);
+   for($i=0;$i<$count_matches_1;$i++) 
+   {
+    if (isset($hash[$matches[1][$i]]))
+    {
+        $res=str_replace($matches[0][$i], $this->templateSafe($hash[$matches[1][$i]]), $res);
+    }
+    else
+    {
+         $res=str_replace($matches[0][$i], '', $res);
+    }
+    
    }
   }
 

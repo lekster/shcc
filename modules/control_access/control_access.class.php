@@ -10,6 +10,10 @@
 // control panel access validation
 class control_access extends module {
  var $id;
+
+ public $mode;
+ public $ajax;
+
 // --------------------------------------------------------------------
  function control_access() {
   // setting module name
@@ -165,6 +169,7 @@ function getParams() {
 
 
    $on_row=0;
+   global $new_category;
 
    for($i=0;$i<count($new);$i++) {
 
@@ -306,6 +311,7 @@ function getParams() {
 
   }
 
+  global $mode;
   $out["MODE"]=$mode;
   $out["ACTION"]=$this->action;
 

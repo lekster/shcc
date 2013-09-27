@@ -35,7 +35,7 @@ function getmicrotime(){
   global $perf_data;
   $tmp=getmicrotime();
   $perf_data[$mpoint]['START']=getmicrotime();
-  if(!$perf_data[$mpoint]['MEMORY_START'] && function_exists('memory_get_usage') ) {
+  if(!@$perf_data[$mpoint]['MEMORY_START'] && function_exists('memory_get_usage') ) {
    $perf_data[$mpoint]['MEMORY_START']=memory_get_usage(); 
   }
  }
@@ -50,9 +50,15 @@ function getmicrotime(){
  function EndMeasure($mpoint) {
   global $perf_data;
   $perf_data[$mpoint]['END']=getmicrotime();
-  if(!$perf_data[$mpoint]['MEMORY_END'] && function_exists('memory_get_usage')) {
-   $perf_data[$mpoint]['MEMORY_END']=memory_get_usage(); 
+  if(!isset($perf_data[$mpoint]['MEMORY_END']) && function_exists('memory_get_usage'))
+  {
+    $perf_data[$mpoint]['MEMORY_END']=memory_get_usage(); 
   }
+  if (!isset($perf_data[$mpoint]['TIME']))
+    $perf_data[$mpoint]['TIME'] = 0;
+  if (!isset($perf_data[$mpoint]['NUM']))
+    $perf_data[$mpoint]['NUM'] = 0;
+  
   $perf_data[$mpoint]['TIME']+=$perf_data[$mpoint]['END']-$perf_data[$mpoint]['START'];
   $perf_data[$mpoint]['NUM']++;
  }

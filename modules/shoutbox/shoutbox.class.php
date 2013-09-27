@@ -11,6 +11,16 @@
 //
 //
 class shoutbox extends module {
+
+public $action;
+public $mode;
+public $data_source;
+public $view_mode;
+public $edit_mode;
+public $tab;
+public $single_rec;
+public $ajax;
+
 /**
 * shoutbox
 *

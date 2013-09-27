@@ -65,6 +65,24 @@ Define("EQ_DELIMITER", "qz_");
 */
   var $config;
 
+public $data_source;
+public $view_mode;
+public $parent_item;
+public $id;
+public $ajax;
+public $room_id;
+public $edit_mode;
+public $mode;
+public $tab;
+public $single_rec;
+public $pda;
+public $print;
+
+public $facade;
+public $configurator;
+public $request; 
+
+
 // --------------------------------------------------------------------
 /**
 * Module constructor
@@ -73,6 +91,9 @@ Define("EQ_DELIMITER", "qz_");
 */
   function module() {
    // this method should me used in context of each module
+    $this->facade = Majordomo_Facade::getInstance();
+    $this->configurator = $this->facade->getConfig();
+    $this->request = Request::getInstance();
   }
 
 // --------------------------------------------------------------------
@@ -128,6 +149,7 @@ Define("EQ_DELIMITER", "qz_");
 */
   function createParamsString($data, $name) {
    $params="";
+   $params1 = array();
    foreach($data as $k=>$v) {
     if ($v=="") {
      UnSet($data[$k]);
@@ -201,7 +223,7 @@ Define("EQ_DELIMITER", "qz_");
         }
         // setting params for current module
         // module has instance in params
-        if ($cr['instance']!='') {
+        if (isset($cr['instance']) && $cr['instance']!='') {
          $instance_params[$module_name][$cr['instance']]=$cr;
         } else {
        // module has no instance
@@ -220,7 +242,7 @@ Define("EQ_DELIMITER", "qz_");
      }
     } elseif (!IsSet($this->instance)) {
      // module has no instances at all
-     $module_data=$global_params[$this->name];
+     $module_data=@$global_params[$this->name];
     }
 
     // setting module data
@@ -628,11 +650,18 @@ Define("EQ_DELIMITER", "qz_");
     $_SERVER['PHP_SELF']=$PHP_SELF;
    }
 
-   if ($md!=$this->name) {
+   if ($md!=$this->name) 
+   {
     $param_str=$this->saveParams();
-   } elseif (IsSet($this->owner)) {
+   } elseif (IsSet($this->owner)) 
+   {
     $param_str=$this->owner->saveParams();
+   } 
+   else
+   {
+    $param_str='';
    }
+
 
    // a href links like <a href="?param=value">
    if ((preg_match_all('/="\?(.*?)"/is', $result, $matches, PREG_PATTERN_ORDER))) {
@@ -707,18 +736,22 @@ Define("EQ_DELIMITER", "qz_");
 * @access private
 */
  function codeParams($in) {
-
-      if (preg_match_all('/(.+?):{(.+?)}/', $in, $matches2, PREG_PATTERN_ORDER)) {
-       for($k=0;$k<count($matches2);$k++) {
-        $data=array();
-        $module_name=$matches2[1][$k];
-        $module_params=explode(',',$matches2[2][$k]);
-        for($m=0;$m<count($module_params);$m++) {
-         $ar=explode("=", trim($module_params[$m]));
-         $data[trim($ar[0])]=trim($ar[1]);
-        }
-        $res_str.=$this->createParamsString($data, $module_name).PARAMS_DELIMITER;
-       }
+      $res_str = '';
+      if (preg_match_all('/(.+?):{(.+?)}/', $in, $matches2, PREG_PATTERN_ORDER)) 
+      {
+         for($k=0;$k<count($matches2);$k++) 
+         {
+            $data=array();
+            $module_name = isset($matches2[1][$k]) ? $matches2[1][$k] : null;
+            $module_params = isset($matches2[2][$k]) ? explode(',',$matches2[2][$k]) : array();
+            for($m=0;$m<count($module_params);$m++) 
+            {
+              $ar=explode("=", trim($module_params[$m]));
+              $data[trim($ar[0])]=trim($ar[1]);
+            }
+            if ($module_name)
+              $res_str.=$this->createParamsString($data, $module_name).PARAMS_DELIMITER;
+         }
       }
 
       return $res_str;

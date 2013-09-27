@@ -11,6 +11,20 @@
 //
 //
 class commands extends module {
+
+
+public $data_source;
+public $view_mode;
+public $parent_item;
+public $id;
+public $ajax;
+public $room_id;
+public $edit_mode;
+public $mode;
+public $tab;
+public $single_rec;
+public $pda;
+
 /**
 * commands
 *

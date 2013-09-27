@@ -16,7 +16,7 @@
 
    [#if CLEAR_FIRST!="1"#]
 
-
+   <!--#
    <big><#LANG_UPDATES#></big>
    <br>
 
@@ -39,6 +39,8 @@
    [#end UPDATES#]
    <hr>
    [#endif UPDATES#]
+    #-->
+
 
    <!--#
    <form action="?" method="post" enctype="multipart/form-data">
@@ -202,6 +204,7 @@
    #-->
 
 
+
    <hr size="1">
    <big>Save backup</big>
    <br>
@@ -213,6 +216,7 @@
    <input type="submit" name="submit" value="Create Backup &gt;&gt;&gt;">
    <input type="hidden" name="mode" value="dump">
    </form>
+
 
 
 
@@ -229,6 +233,9 @@
   <td valign="top">&nbsp;</td>
 
   <td valign="top" width="50%">
+
+    <!--#
+
    [#if CLEAR_FIRST!="1"#]
 
    [#if METHOD="ftp"#]
@@ -280,6 +287,8 @@
    <input type="hidden" name="mode" value="upload">
    </form>
    [#endif#]
+
+   #-->
 
    [#if FILES#]
    &nbsp;<br>

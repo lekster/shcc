@@ -108,7 +108,7 @@
    $out['MOBILE']=1;
   }
 
-  if ($session->data['SHOUT_ROOM_ID'] && LOGGED_USER) {
+  if (isset($session->data['SHOUT_ROOM_ID']) && $session->data['SHOUT_ROOM_ID'] && LOGGED_USER) {
    $room=SQLSelectOne("SELECT * FROM shoutrooms WHERE ID='".(int)$session->data['SHOUT_ROOM_ID']."'");
    //print_r($room);
    if ($room['ADDED_BY']==LOGGED_USER_ID) {
@@ -139,11 +139,18 @@
    $txtdata.='No data';
   }
 
-  $rooms=SQLSelect("SELECT * FROM shoutrooms WHERE (IS_PUBLIC=1) OR (IS_PUBLIC=0 AND ADDED_BY=".(int)$session->data['logged_user'].") OR (IS_PUBLIC=0 AND ID=".(int)$session->data['SHOUT_ROOM_ID'].") ORDER BY PRIORITY DESC, TITLE");
-  if ($rooms[0]['ID']) {
+
+  $sql = "SELECT * FROM shoutrooms WHERE (IS_PUBLIC=1) OR (IS_PUBLIC=0 AND ADDED_BY=".(int)$session->data['logged_user'].")";
+  if (isset($session->data['SHOUT_ROOM_ID']))
+      $sql .= " OR (IS_PUBLIC=0 AND ID=".(int)$session->data['SHOUT_ROOM_ID'].")";
+  $sql .= " ORDER BY PRIORITY DESC, TITLE";
+  $rooms=SQLSelect($sql);
+  if (@$rooms[0]['ID']) 
+  {
    $rooms[0]['FIRST']=1;
    $out['ROOMS']=$rooms;
-   if ($session->data['SHOUT_ROOM_ID']) {
+   if (isset($session->data['SHOUT_ROOM_ID'])) 
+   {
     $out['INIT_ROOM_ID']=$session->data['SHOUT_ROOM_ID'];
    } else {
     $out['INIT_ROOM_ID']=$rooms[0]['ID'];

@@ -22,6 +22,7 @@
 
    $app = new panel();
 
+   global $md;
    if ($md!=$app->name)
    {
       $app->restoreParams();
@@ -34,7 +35,7 @@
    $result = $app->run();
 
    // BEGIN: filter output
-   if ($filterblock!='') 
+   if (isset($filterblock) && $filterblock!='') 
    {
       preg_match('/<!-- begin_data \['.$filterblock.'\] -->(.*?)<!-- end_data \['.$filterblock.'\] -->/is', $result, $match);
       $result=$match[1];
