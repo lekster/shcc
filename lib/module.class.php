@@ -330,12 +330,16 @@ public $request;
 * @access public
 */
  function checkInstalled() {
+  /*
   if (!file_exists(DIR_MODULES.$this->name."/installed")) {
    $this->install();
-  } else {
+  } else 
+  {
+  */  
    $rec=SQLSelectOne("SELECT * FROM project_modules WHERE NAME='".$this->name."'");
-   if (!IsSet($rec["ID"])) $this->install();
-  }
+   if (!IsSet($rec["ID"])) die('Module not installed | '.$this->name);
+   //if (!IsSet($rec["ID"])) $this->install();
+  //}
  }
 
 
