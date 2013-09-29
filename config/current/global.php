@@ -42,7 +42,11 @@ return array(
       'Global' => array
       (
             'McBaseUrl' => 'http://vps7151.mtu.immo/mobile-commerce-rpc-partner-stable/htdocs/pbc.php?service=%login%&password=%password%&phone=%msisdn%&price=%sum%&forceGuid=%transaction_guid%&msg=%msg%',
-            'BackupDir' => '/tmp/1/'
+            'BackupDir' => '/tmp/1/',
+            'CacheDir' => '/tmp/majordomo/cache/',
+            'CmsDir' => '/tmp/majordomo/cms/',
+            'TextsDir' => '/tmp/majordomo/texts/',
+            'SoundsDir' => '/tmp/majordomo/sounds/',
       ),
 
 	  'IOC' => array(

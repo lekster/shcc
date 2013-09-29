@@ -21,6 +21,9 @@ $session=new session("prj");
 // connecting to database
 $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
 
+$config = $facade->getConfig();
+$cacheDir = $config->get("CacheDir", "Global");
+
 //include_once("./load_settings.php");
 
 if (!@$_GET['nocache']) 
@@ -50,15 +53,15 @@ if ($use_caching && preg_match('/^\/([\/\w_-]+)\.html$/', $req_url, $matches) &&
 {
   $cache_filename=preg_replace('/\W/', '_', $matches[1]).'.html';
   
-  if (file_exists(ROOT.'cached/'.$cache_filename)) 
+  if (file_exists($cacheDir.'/'.$cache_filename)) 
   {
-      if ((time()-filemtime(ROOT.'cached/'.$cache_filename))<=$cache_expire) 
+      if ((time()-filemtime($cacheDir.'/'.$cache_filename))<=$cache_expire) 
       {
-         $cached_result=LoadFile(ROOT.'cached/'.$cache_filename);
+         $cached_result=LoadFile($cacheDir.'/'.$cache_filename);
       }
       else 
       {
-         unlink(ROOT.'cached/'.$cache_filename);
+         unlink($cacheDir.'/'.$cache_filename);
       }
    }
 }
@@ -222,7 +225,7 @@ endMeasure('final_echo');
 
 if ($cache_filename != '' && $cached_result == '') 
 {
-   SaveFile(ROOT.'cached/'.$cache_filename, $result);
+   SaveFile($cacheDir.'/'.$cache_filename, $result);
 }
 
 $session->save();

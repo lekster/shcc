@@ -56,37 +56,33 @@ class CycleWork extends \Worker\CronWorker
       // BACKUP DATABASE AND FILES
       $old_mask = umask(0);
        
-      if (!is_dir(DOC_ROOT . '/backup')) 
+      $backupDir = $this->config->get("BackupDir", "Global");
+
+      if (!is_dir($backupDir)) 
       {
-         mkdir(DOC_ROOT . '/backup', 0777);
+         mkdir($backupDir, 0777);
       }
 
-      $target_dir  = DOC_ROOT . '/backup/' . date('Ymd');
-      $full_backup = 0;
+      $targetDir = $backupDir . '/' . date('Ymd');
 
-      if (!is_dir($target_dir)) 
+
+      $isReadyToBackup = (!is_dir($targetDir) && mkdir($targetDir, 0777)) ? true : false;
+
+      /*$isReadyToBackup = false;
+      if (!is_dir($targetDir) && mkdir($targetDir, 0777)) 
       {
-         mkdir($target_dir, 0777);
-         $full_backup=1;
+         $isReadyToBackup = true;
       }
+      */
 
-      if ($full_backup) 
+      if ($isReadyToBackup) 
       {
-         echo "Backing up files...";
+         echo "Backing up files to $targetDir....";
+         exec("/usr/bin/mysqldump --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table --databases ". DB_NAME . ">" . $targetDir . "/" . DB_NAME . ".sql");
          
-         if (substr(php_uname(), 0, 7) == "Windows") 
-         {
-            exec(SERVER_ROOT . "/server/mysql/bin/mysqldump --user=root --no-create-db --add-drop-table --databases " . DB_NAME . ">" . $target_dir . "/" . DB_NAME . ".sql");
-         }
-         else 
-         {
-            exec("/usr/bin/mysqldump --user=" . DB_USER . " --password=" . DB_PASSWORD . " --no-create-db --add-drop-table --databases ". DB_NAME . ">" . $target_dir . "/" . DB_NAME . ".sql");
-         }
-        
-         copyTree('./cms',    $target_dir . '/cms',    1);
-         copyTree('./texts',  $target_dir . '/texts',  1);
-         copyTree('./sounds', $target_dir . '/sounds', 1);
-        
+         copyTree('./cms',    $targetDir . '/cms',    1);
+         copyTree('./texts',  $targetDir . '/texts',  1);
+         copyTree('./sounds', $targetDir . '/sounds', 1);
          echo "OK\n";
       }
 

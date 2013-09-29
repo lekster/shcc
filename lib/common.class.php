@@ -568,8 +568,13 @@
 *
 * @access public
 */
- function getURL($url, $cache=600, $username='', $password='') {
-  $cache_file=ROOT.'cached/urls/'.preg_replace('/\W/is', '_', str_replace('http://', '', $url)).'.html';
+ function getURL($url, $cache=600, $username='', $password='') 
+ {
+  $facade = Majordomo_Facade::getInstance();
+  $config = $facade->getConfig();
+  $cacheDir = $config->get("CacheDir", "Global");
+
+  $cache_file=$cacheDir.'/urls/'.preg_replace('/\W/is', '_', str_replace('http://', '', $url)).'.html';
   if (!$cache || !is_file($cache_file) || ((time()-filemtime($cache_file))>$cache)) {
    //download
    $ch = curl_init();
@@ -584,8 +589,8 @@
    }
    $result = curl_exec($ch);
    if ($cache>0) {
-    if (!is_dir(ROOT.'cached/urls')) {
-     @mkdir(ROOT.'cached/urls', 0777);
+    if (!is_dir($cacheDir.'/urls')) {
+     @mkdir($cacheDir.'/urls', 0777);
     }
     SaveFile($cache_file, $result);
    }

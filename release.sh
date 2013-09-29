@@ -1,12 +1,37 @@
 #! /bin/sh
 # svn checkout svn://192.168.1.120/myproject/php/projects/filmsLib /home/projects/php/projects/devel/filmsLib --force
 
+#mkdir -p 
+#sudo chown root:root -R
+#sudo chmod 777 -R
+
+
 mkdir -p /home/projects/data/majordomo/lock
 mkdir -p /home/projects/data/majordomo/log
 sudo chown root:root -R /home/projects/data/majordomo/lock
 sudo chown root:root -R /home/projects/data/majordomo/log
 sudo chmod 777 -R /home/projects/data/majordomo/lock
 sudo chmod 777 -R /home/projects/data/majordomo/log
+
+mkdir -p /home/projects/data/majordomo/backup
+sudo chown root:root -R /home/projects/data/majordomo/backup
+sudo chmod 777 -R /home/projects/data/majordomo/backup
+
+mkdir -p /home/projects/data/majordomo/cache
+sudo chown root:root -R /home/projects/data/majordomo/cache
+sudo chmod 777 -R /home/projects/data/majordomo/cache
+
+mkdir -p /home/projects/data/majordomo/cms/
+sudo chown root:root -R /home/projects/data/majordomo/cms/
+sudo chmod 777 -R /home/projects/data/majordomo/cms/
+
+mkdir -p /home/projects/data/majordomo/texts/
+sudo chown root:root -R /home/projects/data/majordomo/texts/
+sudo chmod 777 -R /home/projects/data/majordomo/texts/
+
+mkdir -p /home/projects/data/majordomo/sounds/
+sudo chown root:root -R /home/projects/data/majordomo/sounds/
+sudo chmod 777 -R /home/projects/data/majordomo/sounds/
 
 rm -f /tmp/deploy_image.tar
 git archive --format tar -o /tmp/deploy_image.tar $1;

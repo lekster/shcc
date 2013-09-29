@@ -439,11 +439,17 @@ function colorizeArray(&$ar, $every=2) {
 
 // --------------------------------------------------------------------
 
-function clearCache($verbose=0) {
- if ($handle = opendir(ROOT.'cached')) { 
+function clearCache($verbose=0) 
+{
+  
+  $facade = Majordomo_Facade::getInstance();
+  $config = $facade->getConfig();
+  $cacheDir = $config->get("CacheDir", "Global"); 
+
+ if ($handle = opendir($cacheDir)) { 
    while (false !== ($file = readdir($handle))) { 
-       if (is_file(ROOT.'cached/'.$file)) {
-        @unlink(ROOT.'cached/'.$file);
+       if (is_file($cacheDir .'/'.$file)) {
+        @unlink($cacheDir.'/'.$file);
         if ($verbose) {
          echo "File : ".$file." <b>removed</b><br>\n";
         }

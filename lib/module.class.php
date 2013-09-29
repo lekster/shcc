@@ -574,8 +574,10 @@ public $request;
 */
 // --------------------------------------------------------------------
  function cached($content) {
+
+  $cacheDir = $this->configurator->get("CacheDir", "Global");
   $h=md5($content);
-  $filename=ROOT.'cached/'.$this->name.'_'.$h.'.txt';
+  $filename=$cacheDir.'/'.$this->name.'_'.$h.'.txt';
   $cache_expire=15*60; // 15 minutes cache expiration time
 
   if (file_exists($filename)) {
