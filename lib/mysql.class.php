@@ -184,7 +184,8 @@
    $qry="UPDATE `$table` SET ";
    foreach($data as $field=>$value) {
     if (!is_Numeric($field)) {
-     $qry.="`$field`='".$this->DBSafe1($value)."', ";
+     $val = (is_null($value)) ?  "null, "  : "'" . $this->DBSafe1($value) . "', ";
+     $qry.="`$field`=".$val;
     }
    }
    $qry=substr($qry, 0, strlen($qry)-2);
@@ -211,9 +212,10 @@
    $fields="";
    $values="";
    foreach($data as $field=>$value) {
-    if (!is_Numeric($field)) {  
+    if (!is_Numeric($field)) 
+    {  
      $fields.="`$field`, ";
-     $values.="'".$this->DBSafe1($value)."', ";
+     $values.= is_null($value) ?  "null, "  :  "'".$this->DBSafe1($value)."', ";
     }
    }
    $fields=substr($fields, 0, strlen($fields)-2);
@@ -427,9 +429,9 @@
 * @param string $record record to update
 * @global object mysql database object
 */
- function SQLUpdate($table, $record) {
+ function SQLUpdate($table, $record, $pk = "ID") {
     $db = mysql::getInstance(); 
-  return $db->Update($table, $record);
+  return $db->Update($table, $record, $pk);
  }
 
 // --------------------------------------------------------------------   

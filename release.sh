@@ -47,8 +47,11 @@ sudo chown root:root -R  /home/projects/php/projects/stable/majordomo/
 sudo chmod 755 -R  /home/projects/php/projects/stable/majordomo/
 #sudo chmod 777 -R  /home/projects/php/projects/stable/majordomo/
 
-##(crontab -l ; echo "0 * * * * wget -O - -q http://www.example.com/cron.php") | crontab
 
+##!!!!CRON
+##(crontab -l ; echo "* * * * * /usr/local/bin/php -q /home/projects/php/projects/stable/majordomo/cron_worker/device_plugin_job.php > /dev/null") | crontab
+#* * * * * /usr/local/bin/php -q /home/projects/php/projects/stable/majordomo/cron_worker/cycle_work.php > /dev/null
+#* * * * * /usr/local/bin/php -q /home/projects/php/projects/stable/majordomo/cron_worker/device_plugin_job.php > /dev/null
 
 #VERSION_SVN=`svn log svn://192.168.1.120/myproject/php/projects/ha/ --revision HEAD --quiet | grep -E 'r[0-9]+' | cut -d'|' -f1 | sed 's/ //g'`
 #sudo svn export  svn://192.168.1.120/myproject/php/projects/ha /home/projects/php/projects/stable/ha --force

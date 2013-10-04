@@ -5,6 +5,7 @@
 * @version 0.7
 */
 
+require_once "DevicePlugins/abstract.DevicePlugin.php";
 
 /**
 * Title
@@ -294,6 +295,140 @@
   $rec['ID']=SQLInsert('jobs', $rec);
   return $rec['ID'];
  }
+
+//AddDevicePluginJob('pluginName', 'SetPort', имя порта, значение, $this->name, имя Свойства)
+ function addDevicePluginJob($deviceTitle, $command, $port, $val, $retObjectName, $retObjectProperty, $datetime)
+ {
+
+  //getplugin by name
+  //$plugin = SQLSelectOne("select * from device_plugin where name = '". DBSafe($pluginName) . "'");
+  //$pluginId = @$plugin['device_plugin_id'];
+ 
+  $device = SQLSelectOne("select * from devices where title = '". DBSafe($deviceTitle) . "'");
+  $deviceId = @$device['device_id']; 
+
+  //$plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe(@$device['device_plugin_id']) . "'");
+  //$pluginId = @$plugin['device_plugin_id'];
+
+  //var_dump($device);
+  //var_dump($plugin);
+  //die();
+
+  //check for command and device Port
+  if ($deviceId) 
+  {
+      $rec=array();
+      //$rec['device_plugin_id']=$pluginId;
+      $rec['device_id']=$deviceId;
+      $rec['command']=$command;
+      $rec['port']=$port;
+      $rec['val'] = $val;
+      $rec['run_at']=  @strtotime($datetime) ? date('Y-m-d H:i:s', @strtotime($datetime)) : date('Y-m-d H:i:s');
+      //$rec['EXPIRE']=date('Y-m-d H:i:s', $datetime+$expire);
+      $rec['ret_object_name'] = $retObjectName;
+      $rec['ret_object_property'] = $retObjectProperty;
+      $rec['start_execute_at'] = null;
+      $rec['executed_at'] = null;
+      $rec['result'] = null;
+      $rec['result_status'] = 'scheduled';
+      $rec['ID']=SQLInsert('device_plugin_job', $rec);
+      //return $rec['ID'];
+  }
+  //var_dump($rec);
+  return (is_numeric(@$rec['ID'])) ? $rec['ID'] : null;  
+ }
+
+
+function runDevicePluginJob() 
+{
+  //SQLExec("UPDATE jobs SET EXPIRED=1 WHERE PROCESSED=0 AND EXPIRE<='".date('Y-m-d H:i:s')."'");
+  
+  $devices = array();
+  $plugins = array();
+
+  //$jobs=SQLSelect("SELECT * FROM device_plugin_job WHERE run_at <= '".date('Y-m-d H:i:s')."'" );
+  $jobs=SQLSelect("SELECT * FROM device_plugin_job WHERE run_at <= '".date('Y-m-d H:i:s')."'" . " and result_status = 'scheduled' ");
+  //$jobs=SQLSelect("SELECT * FROM device_plugin_job");
+  //var_dump($jobs);
+  //die();
+  foreach ($jobs as $job)
+  {
+    $jb = $job;
+    //var_dump($jb);
+    //die();
+    //echo "Running job: " . "\n";
+    SQLUpdate('device_plugin_job', $jb, 'device_plugin_job_id');
+    
+    //var_dump($jb);die();
+
+    $deviceId = @$jb['device_id'];
+    if (isset($deviceId) && !isset($devices[$deviceId]))
+    {
+      $device = SQLSelectOne("select * from devices where device_id = '". DBSafe($deviceId) . "'");
+      $devices[$deviceId] = $device;
+    } 
+    $device = @$devices[$deviceId];
+
+
+    $devicePluginId = @$device['device_plugin_id'];
+    if (isset($devicePluginId) && !isset($plugins[$devicePluginId]))
+    {
+        $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
+        $plugins[$devicePluginId] = $plugin;
+    }
+    $plugin = @$plugins[$devicePluginId];
+      
+    //var_dump($device);
+    //var_dump($plugin);
+    
+    $ret = LoadDevicePlugin(@$plugin['name']);
+    if (isset($device) && isset($plugin) && is_object($ret))
+    {
+
+        $jb['start_execute_at']=date('Y-m-d H:i:s');
+        $jb['result_status'] = 'executing...';
+        SQLUpdate('device_plugin_job', $jb, 'device_plugin_job_id');
+
+        $resultStatus = 'done';
+        switch($jb['command'])
+        {
+            case 'SetPortVal':
+              $result = $ret->SetPortVal(1,2,3);
+            break; 
+
+            default:
+               $result = null;
+               $resultStatus = 'error';
+        }
+        
+        //var_dump($result);die();
+
+        if (trim($jb['ret_object_name'])!='' && trim($jb['ret_object_property'])!='') 
+        {
+           sg(trim($jb['ret_object_name']).'.'.trim($jb['ret_object_property']), $result, 1);
+        } 
+    }
+    else
+    {
+      $result = null;
+      $resultStatus = 'error';
+    }
+
+    $jb['executed_at']=date('Y-m-d H:i:s');
+    $jb['result'] = $result;
+    $jb['result_status'] = $resultStatus;
+    SQLUpdate('device_plugin_job', $jb, 'device_plugin_job_id');
+  } 
+
+
+}
+
+function LoadDevicePlugin($pluginName)
+{
+  $ret = AbstractDevicePlugin::LoadDevicePlugin($pluginName);
+  return $ret;
+}
+
 
 /**
 * Title

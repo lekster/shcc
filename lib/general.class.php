@@ -45,7 +45,7 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
 }
 
 $blocked=array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS', '_FILES', '_REQUEST', '_ENV');
-if ($_SERVER['REQUEST_METHOD']=="POST") {
+if (@$_SERVER['REQUEST_METHOD']=="POST") {
  $blocked[]='_GET';
 } else {
  $blocked[]='_POST';
@@ -71,7 +71,7 @@ function stripit(&$a)
  }
 }
 
- if ($_SERVER['REQUEST_METHOD']=="POST") {
+ if (@$_SERVER['REQUEST_METHOD']=="POST") {
   $params=$_POST;
  } else {
   $params=$_GET;

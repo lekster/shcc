@@ -10,8 +10,10 @@
 * @version 0.1 (wizard, 10:05:38 [May 24, 2012])
 */
 Define('DEF_TYPE_OPTIONS', 'img=Image|html=HTML'); // options for 'TYPE'
-Define('DEF_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal'); // options for 'CONDITION'
-//
+Define('DEF_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal|5=MoreOrEq|6=LessOrEq|7=Regexp'); // options for 'CONDITION'
+//<option value="4"[#if STATE_CONDITION="5"#] selected[#endif#]>&gt;=
+//<option value="4"[#if STATE_CONDITION="6"#] selected[#endif#]>&lt;=
+//<option value="4"[#if STATE_CONDITION="7"#] selected[#endif#]>regexp
 //
 class scenes extends module {
 /**
@@ -140,7 +142,7 @@ function run() {
 * @access public
 */
 function admin(&$out) {
- if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+ if (isset($this->data_source) && !@$_GET['data_source'] && !@$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
  if ($this->data_source=='scenes' || $this->data_source=='') {
@@ -155,7 +157,7 @@ function admin(&$out) {
    $this->redirect("?data_source=scenes");
   }
  }
- if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+ if (isset($this->data_source) && !@$_GET['data_source'] && !@$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
  if ($this->data_source=='elements') {
@@ -170,7 +172,7 @@ function admin(&$out) {
    $this->redirect("?data_source=elements");
   }
  }
- if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+ if (isset($this->data_source) && !@$_GET['data_source'] && !@$_POST['data_source']) {
   $out['SET_DATASOURCE']=1;
  }
  if ($this->data_source=='elm_states') {
@@ -186,6 +188,26 @@ function admin(&$out) {
   }
  }
 }
+
+
+function checkAllStates()
+{
+    $qry="1";
+     if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
+      $qry.=" AND scenes.ID='".$m[1]."'";
+     }
+     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND $qry");
+     $total=count($states);
+     for($i=0;$i<$total;$i++) {
+      $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
+      if ($states[$i]['TYPE']=='html') {
+       $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
+      }
+     }
+     return json_encode($states);
+}
+
+
 /**
 * FrontEnd
 *
@@ -200,49 +222,46 @@ function usual(&$out) {
     global $op;
     header ("HTTP/1.0: 200 OK\n");
     header ('Content-Type: text/html; charset=utf-8');
-    if ($op=='checkAllStates') {
-     $qry="1";
-     if (preg_match('/(\d+)\.html/', $_SERVER["REQUEST_URI"], $m)) {
-      $qry.=" AND scenes.ID='".$m[1]."'";
-     }
-     $states=SQLSelect("SELECT elm_states.ID, elm_states.TITLE, elm_states.HTML, elements.SCENE_ID, elm_states.SWITCH_SCENE, elements.TYPE FROM elm_states, elements WHERE elm_states.ELEMENT_ID=elements.ID AND $qry");
-     $total=count($states);
-     for($i=0;$i<$total;$i++) {
-      $states[$i]['STATE']=$this->checkState($states[$i]['ID']);
-      if ($states[$i]['TYPE']=='html') {
-       $states[$i]['HTML']=processTitle($states[$i]['HTML'], $this);
-      }
-     }
-     echo json_encode($states);
+    //!!!!!! проверяем статусы
+    if ($op=='checkAllStates') 
+    {
+      echo $this->checkAllStates();
     }
-    if ($op=='click') {
-     global $id;
-     $state=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
-     $params=array('STATE'=>$state['TITLE']);
-     if ($state['ACTION_OBJECT'] && $state['ACTION_METHOD']) {
-      callMethod($state['ACTION_OBJECT'].'.'.$state['ACTION_METHOD'], $params);
-     }
-     if ($state['SCRIPT_ID']) {
-      runScript($state['SCRIPT_ID'], $params);
-     }
-     echo "OK";
+
+    //!!!!!! реагируем на onclick
+    if ($op=='click') 
+    {
+       global $id;
+       $state=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
+       $params=array('STATE'=>$state['TITLE']);
+       if ($state['ACTION_OBJECT'] && $state['ACTION_METHOD']) 
+       {
+          callMethod($state['ACTION_OBJECT'].'.'.$state['ACTION_METHOD'], $params);
+       }
+       if ($state['SCRIPT_ID']) 
+       {
+          runScript($state['SCRIPT_ID'], $params);
+       }
+       //echo $this->checkAllStates();
+       echo "OK";
     }
-    if ($op=='position') {
-     global $id;
-     global $posx;
-     global $posy;
-     global $width;
-     global $height;
-     if ($id && $posx && $posy && $width && $height) {
-      $state=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
-      $state['WINDOW_POSX']=$posx;
-      $state['WINDOW_POSY']=$posy;
-      $state['WINDOW_WIDTH']=$width;
-      $state['WINDOW_HEIGHT']=$height;
-      SQLUpdate('elm_states', $state);
-     }
-     // 
-     echo "OK";
+    if ($op=='position') 
+    {
+       global $id;
+       global $posx;
+       global $posy;
+       global $width;
+       global $height;
+       if ($id && $posx && $posy && $width && $height) {
+        $state=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
+        $state['WINDOW_POSX']=$posx;
+        $state['WINDOW_POSY']=$posy;
+        $state['WINDOW_WIDTH']=$width;
+        $state['WINDOW_HEIGHT']=$height;
+        SQLUpdate('elm_states', $state);
+       }
+
+       echo "OK";
     }
     exit;
  }
@@ -381,41 +400,70 @@ function usual(&$out) {
 * @access public
 */
  function checkState($id) {
+  //status = 1 - state is active
+  //status = 0 - state is NOT active
+
   $rec=SQLSelectOne("SELECT * FROM elm_states WHERE ID='".$id."'");
-  if (!$rec['IS_DYNAMIC']) {
-   $status=1;
-  } elseif ($rec['IS_DYNAMIC']==1) {
-   if ($rec['LINKED_OBJECT']!='' && $rec['LINKED_PROPERTY']!='') {
-    $value=gg(trim($rec['LINKED_OBJECT']).'.'.trim($rec['LINKED_PROPERTY']));
-   } elseif ($rec['LINKED_PROPERTY']!='') {
-    $value=gg($rec['LINKED_PROPERTY']);
-   } else {
-    $value=-1;
-   }
+  $status=0;
 
-   if ($rec['CONDITION']==1 && $value==$rec['CONDITION_VALUE']) {
+  if (!$rec['IS_DYNAMIC']) 
+  {
     $status=1;
-   } elseif ($rec['CONDITION']==2 && (float)$value>(float)$rec['CONDITION_VALUE']) {
-    $status=1;
-   } elseif ($rec['CONDITION']==3 && (float)$value<(float)$rec['CONDITION_VALUE']) {
-    $status=1;
-   } elseif ($rec['CONDITION']==4 && $value!=$rec['CONDITION_VALUE']) {
-    $status=1;
-   } else {
-    $status=0;
-   }
+  } 
+  elseif ($rec['IS_DYNAMIC']==1) 
+  {
+     if ($rec['LINKED_OBJECT']!='' && $rec['LINKED_PROPERTY']!='') 
+     {
+        $value=gg(trim($rec['LINKED_OBJECT']).'.'.trim($rec['LINKED_PROPERTY']));
+     } elseif ($rec['LINKED_PROPERTY']!='') 
+     {
+        //get from ThisComputer Object
+        $value=gg($rec['LINKED_PROPERTY']);
+     }
+     else
+     {
+      $value = null;
+     }
 
-  } elseif ($rec['IS_DYNAMIC']==2) {
+     if (!is_null($value))
+     {
 
-   $display=0;
-   eval($rec['CONDITION_ADVANCED']);
-   $status=$display;
+      //<option value="4"[#if STATE_CONDITION="5"#] selected[#endif#]>&gt;=
+      //<option value="4"[#if STATE_CONDITION="6"#] selected[#endif#]>&lt;=
+      //<option value="4"[#if STATE_CONDITION="7"#] selected[#endif#]>regexp
 
+       if ($rec['CONDITION']==1 && $value==$rec['CONDITION_VALUE']) {
+        $status=1;
+       } elseif ($rec['CONDITION']==2 && (float)$value>(float)$rec['CONDITION_VALUE']) {
+        $status=1;
+       } elseif ($rec['CONDITION']==3 && (float)$value<(float)$rec['CONDITION_VALUE']) {
+        $status=1;
+       } elseif ($rec['CONDITION']==4 && $value!=$rec['CONDITION_VALUE']) {
+        $status=1;
+       } elseif ($rec['CONDITION']==5 && (float)$value >= (float)$rec['CONDITION_VALUE']) {
+        $status=1;
+       } elseif ($rec['CONDITION']==6 && (float)$value <= (float)$rec['CONDITION_VALUE']) {
+        $status=1;
+       } elseif ($rec['CONDITION']==7 && @preg_match($rec['CONDITION_VALUE'], $value)) {
+        $status=1;
+       }
+       else {
+        $status=0;
+       }
+
+     }
+
+  } elseif ($rec['IS_DYNAMIC']==2) 
+  {
+     $display=0;
+     eval($rec['CONDITION_ADVANCED']);
+     $status =(is_numeric($display) && $display > 0) ? 1 : 0;
   }
 
-  if ($rec['CURRENT_STATE']!=$status) {
-   $rec['CURRENT_STATE']=$status;
-   SQLExec('UPDATE elm_states SET CURRENT_STATE='.$rec['CURRENT_STATE'].' WHERE ID='.(int)$rec['ID']);
+  if ($rec['CURRENT_STATE']!=$status) 
+  {
+     $rec['CURRENT_STATE']=$status;
+     SQLExec('UPDATE elm_states SET CURRENT_STATE='.$rec['CURRENT_STATE'].' WHERE ID='.(int)$rec['ID']);
   }
 
   return $status;

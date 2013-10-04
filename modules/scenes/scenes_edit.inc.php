@@ -254,7 +254,7 @@
    }
    $total=count($menu_items);
    for($i=0;$i<$total;$i++) {
-    if ($titles[$menu_items[$i]['PARENT_ID']]) {
+    if (@$titles[$menu_items[$i]['PARENT_ID']]) {
      $menu_items[$i]['TITLE']=$titles[$menu_items[$i]['PARENT_ID']].' &gt; '.$menu_items[$i]['TITLE'];
     }
    }

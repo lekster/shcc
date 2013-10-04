@@ -200,6 +200,7 @@
  }
 
  function gg($varname) {
+  $value = null;
   return getGlobal($varname, $value);
  }
 
