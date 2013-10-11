@@ -380,25 +380,9 @@ function setLocalTime($now_date, $diff=0) {
 // ---------------------------------------------------------
 function DebMes ($text) 
 {
-   //if (ENVIRONMENT != "dev")
-   //   return;
-   
-   // DEBUG MESSAGE LOG
-   if (!is_dir(ROOT.'debmes')) 
-   {
-      mkdir(ROOT.'debmes');
-   }
- 
-   $today_file = ROOT . 'debmes/' . date('Ymd') . '.txt';
-   $f = fopen($today_file, "a+");
- 
-   if ($f) 
-   {
-      fputs($f, date("d.m.Y H:i:s"));
-      fputs($f, "\n$text\n");
-      fclose($f);
-      @chmod($today_file, 0666);  
-   }
+  $facade = Majordomo_Facade::getInstance();
+  $logger = $facade->getLogger();
+  $logger->info($text);
 }
 
 // ---------------------------------------------------------

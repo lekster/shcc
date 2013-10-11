@@ -107,17 +107,16 @@ ALTER TABLE device_plugin_properties ADD CONSTRAINT uniq_id_key UNIQUE (device_p
 
 
 CREATE TABLE `device_properties` (                           
-                `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,        
-                `DEVICE_ID` int(10) unsigned NOT NULL DEFAULT '0',    
-                `SYSNAME` varchar(255) NOT NULL DEFAULT '',           
-                `VALUE` varchar(255) NOT NULL DEFAULT '',             
-                `CHECK_LATEST` datetime DEFAULT NULL,                 
-                `UPDATED` datetime DEFAULT NULL,                      
-                `LINKED_OBJECT` varchar(255) NOT NULL DEFAULT '',     
-                `LINKED_PROPERTY` varchar(255) NOT NULL DEFAULT '',   
-                `PATH` varchar(255) NOT NULL DEFAULT '',              
-                `STARRED` int(3) unsigned NOT NULL DEFAULT '0',       
-                PRIMARY KEY (`ID`)                                    
+                `property_id` int(10) unsigned NOT NULL AUTO_INCREMENT,        
+                `device_id` int(10) unsigned NOT NULL DEFAULT '0',    
+                `sysname` varchar(255) NOT NULL DEFAULT '',           
+                `value` varchar(255) NOT NULL DEFAULT '',             
+                `check_latest` datetime DEFAULT NULL,                 
+                `updated` datetime DEFAULT NULL,                      
+                `linked_object` varchar(255) NOT NULL DEFAULT '',     
+                `linked_property` varchar(255) NOT NULL DEFAULT '',   
+                `path` varchar(255) NOT NULL DEFAULT '',              
+                PRIMARY KEY (`property_id`)                                    
               ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8  
 
 

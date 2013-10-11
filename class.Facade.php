@@ -105,7 +105,7 @@ class Majordomo_Facade
        Define('UPDATES_REPOSITORY_NAME', 'smarthome');
 
        Define('PROJECT_TITLE', 'MajordomoSL');
-       Define('PROJECT_BUGTRACK', "bugtrack@smartliving.ru");
+       Define('PROJECT_BUGTRACK', "asm@pbsol.ru");
 
        if (@$_ENV["COMPUTERNAME"]) {
         Define('COMPUTER_NAME', strtolower($_ENV["COMPUTERNAME"])); 

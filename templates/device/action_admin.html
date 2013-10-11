@@ -1,0 +1,25 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table device search -->
+ [#if VIEW_MODE="search_device" || VIEW_MODE=""#]
+  [#inc device_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table device search -->
+ <!-- table device edit -->
+ [#if VIEW_MODE="edit_device"#]
+   [#inc device_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table device edit -->
+ <!-- table device edit -->
+ [#if VIEW_MODE="edit_display"#]
+   [#inc display_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table device edit -->
+ <!-- table device view --> 
+ [#if VIEW_MODE="view_device"#]
+   [#inc device_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table device view -->

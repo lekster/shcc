@@ -23,7 +23,17 @@ TODO
 
 4. Первести все директории с динамическими данными типа backup, cache и пр. в место отдельное от кода, хранить в конфигах
 
+
 'CacheDir' => '/home/projects/data/majordomo/cache/',
+./cached/
+./cms/
+./debmes/
+./modules/
+./templates/
+./objects/
+./rc/
+./saverestore/ 
+
 
 
 тег 0.0.6
@@ -45,7 +55,7 @@ TODO
 
 тег 0.0.6
 
-Убрать упоминание омомо и запушить?
+Убрать омомо и запушить?
 10. Настролить мониторинг на отсутсвие показателей в Graphite (развернуть GraphiteMonitProject)
    5.1 интегрировать с majordomo (минимум добавиь страницу с оповещениями + всплывающие окна, максимум Growl)
 
@@ -140,3 +150,7 @@ CREATE TABLE `device_plugin_job` (
 
 
 Завести страницу со списком Device c возможностью добавления/удаления свойств и пр.
+
+добавить папки device в modules and tremplates
+add record into project_modules
+add record into admin_users

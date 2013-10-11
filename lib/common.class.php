@@ -5,6 +5,20 @@
 * @version 0.7
 */
 
+
+/*
+GLOBAL FUNC
+
+//AddDevicePluginJob('pluginName', 'SetPort', имя порта, значение, $this->name, имя Свойства)
+ function addDevicePluginJob($deviceTitle, $command, $port, $val, $retObjectName, $retObjectProperty, $datetime)
+
+//function sendCommnadToDevicePlugin($deviceName, $command, $params = array()) ???!!!
+function sendCommnadToDevicePlugin($deviceName, $command, $port = null, $val = null)
+
+*/
+
+
+
 require_once "DevicePlugins/abstract.DevicePlugin.php";
 
 /**
@@ -393,7 +407,7 @@ function runDevicePluginJob()
         switch($jb['command'])
         {
             case 'SetPortVal':
-              $result = $ret->SetPortVal(1,2,3);
+              $result = $ret->SetPortVal($device['raw_id'],$jb['port'],$jb['val']);
             break; 
 
             default:
@@ -429,6 +443,35 @@ function LoadDevicePlugin($pluginName)
   return $ret;
 }
 
+
+//function sendCommnadToDevicePlugin($deviceName, $command, $params = array())
+function sendCommnadToDevicePlugin($deviceName, $command, $port = null, $val = null)
+{
+  $result = null;
+  $device = SQLSelectOne("select * from devices where title = '". DBSafe($deviceName) . "'");
+  if ($device)
+  {
+    $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($device['device_plugin_id']) . "'");
+    if ($plugin)
+    {
+       $ret = LoadDevicePlugin($plugin['name']);
+       if ($ret)
+       {
+            switch($command)
+            {
+                case 'SetPortVal':
+                  $result = $ret->SetPortVal($device['raw_id'],$port,$val);
+                break; 
+
+                default:
+                   $result = null;
+            }
+       }  
+    }
+     
+  }
+  return $result;
+}
 
 /**
 * Title

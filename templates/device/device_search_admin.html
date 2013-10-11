@@ -1,0 +1,78 @@
+<!--#
+ @version 0.1 (auto-set)
+
+CREATE TABLE `devices` (                             
+             `device_id` int(10) unsigned NOT NULL AUTO_INCREMENT,       
+             `title` varchar(255) NOT NULL DEFAULT '',            
+             `raw_id` varchar(255) NOT NULL,             
+             `device_plugin_id` int NOT NULL ,
+             `status` int(3) NOT NULL DEFAULT '0',                
+             `check_latest` datetime DEFAULT NULL,                
+             `check_latest` datetime DEFAULT NULL,                  
+             `script_id` int(10) NOT NULL DEFAULT '0',            
+             `code` text,                                         
+             `online_interval` int(10) NOT NULL DEFAULT '0',      
+             `log` text,                                          
+             PRIMARY KEY (`device_id`)                                   
+           ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8  
+
+#-->
+
+<!-- results -->
+[#if RESULT#]
+
+<!-- paging -->
+[#if PAGES#]
+<#LANG_PAGES#>:&nbsp;
+[#begin PREVPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a>[#end PREVPAGE#]
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]
+[#end PAGES#]
+[#begin NEXTPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a>[#end NEXTPAGE#]
+[#endif PAGES#]
+<!-- / paging -->
+
+<!-- search results (list) -->
+<form action="?" method="post" name="frmList_device" style="padding:0px">
+<h3><#LANG_DEVICES#></h3>
+<table class="table table-bordered table-rounded">
+[#begin RESULT#]
+<tr >
+ <td
+   >
+   <big>[#title#]</big> ([#raw_id#], [#if STATUS="1"#]<#LANG_ONLINE#>[#else STATUS#]<#LANG_OFFLINE#>[#endif STATUS#])
+   <br>
+   <#LANG_LAST_CHECKED#>: [#check_latest#]<br>
+   Next check: [#check_next#]
+ </td>
+ <td >
+  [#if "<#ACTION#>"=="admin"#]
+    <a href="?view_mode=edit_device&id=[#device_id#]"><#LANG_EDIT#></a><span class="divider">/</span><a href="?view_mode=delete_device&id=[#device_id#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+  [#endif ACTION#]
+ </td>
+</tr>
+[#end RESULT#]
+</table>
+
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_device">
+</form>
+<!-- / search results (list) -->
+
+<!-- paging -->
+[#if PAGES#]
+<#LANG_PAGES#>:&nbsp;
+[#begin PREVPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&lt;&lt;&lt;</a>[#end PREVPAGE#]
+[#begin PAGES#]
+[#if !SELECTED#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">[#else#]<b>[#endif#][#NUM#]
+[#end PAGES#]
+[#begin NEXTPAGE#]<a href="?view_mode=<#VIEW_MODE#>&mode=<#MODE#>&save_qry=1&page=[#NUM#]">&gt;&gt;&gt;</a>[#end NEXTPAGE#]
+[#endif PAGES#]
+<!-- / paging -->
+
+
+
+[#else RESULT#]
+<div class="alert alert-error"><#LANG_NO_DEVICES_FOUND#></div>
+[#endif RESULT#]
+<!-- / results -->

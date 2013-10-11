@@ -118,7 +118,7 @@
    }
   }
 
-  if ($res[0]['ID']) {
+  if (@$res[0]['ID']) {
    $old_dt=$res[0]['DT'];
    $total=count($res);
    for($i=0;$i<$total;$i++) {

@@ -30,7 +30,7 @@
   // FIELDS ORDER
   global $sortby_scenes;
   if (!$sortby_scenes) {
-   $sortby_scenes=$session->data['scenes_sort'];
+   $sortby_scenes=@$session->data['scenes_sort'];
   } else {
    if ($session->data['scenes_sort']==$sortby_scenes) {
     if (Is_Integer(strpos($sortby_scenes, ' DESC'))) {

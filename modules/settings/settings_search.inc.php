@@ -47,9 +47,9 @@
   // FIELDS ORDER
   global $sortby;
   if (!$sortby) {
-   $sortby=$session->data['settings_sort'];
+   $sortby=@$session->data['settings_sort'];
   } else {
-   if ($session->data['settings_sort']==$sortby) {
+   if (@$session->data['settings_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
      $sortby=str_replace(' DESC', '', $sortby);
     } else {

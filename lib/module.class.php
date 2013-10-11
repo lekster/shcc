@@ -81,7 +81,10 @@ public $print;
 public $facade;
 public $configurator;
 public $request; 
-
+public $filter_name;
+public $section_title;
+public $filter_exname;
+public $mobile;
 
 // --------------------------------------------------------------------
 /**
