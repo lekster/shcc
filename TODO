@@ -25,14 +25,14 @@ TODO
 
 
 'CacheDir' => '/home/projects/data/majordomo/cache/',
-./cached/
+./cached/ +
 ./cms/
-./debmes/
+./debmes/ +
 ./modules/
 ./templates/
 ./objects/
 ./rc/
-./saverestore/ 
+./saverestore/ + 
 
 
 
@@ -154,3 +154,12 @@ CREATE TABLE `device_plugin_job` (
 добавить папки device в modules and tremplates
 add record into project_modules
 add record into admin_users
+
+*********************************
+
+1) Автоматически добавлять св-ва из плагина +
+2) реализовать скрипт сбора данных +
+3) реализовать API для обновления данных внешними системами
+4) реализовать Readonly св-ва
+
+alter table script set text

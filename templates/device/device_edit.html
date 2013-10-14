@@ -68,7 +68,7 @@
  function setProperty(prop_id, current_value) {
   var new_value=prompt("Please enter new value", current_value);
   if (new_value!=null) {
-   var url="?id=<#ID#>&edit_mode=<#EDIT_MODE#>&view_mode=<#VIEW_MODE#>&mode=setvalue";
+   var url="?id=<#device_id#>&edit_mode=<#EDIT_MODE#>&view_mode=<#VIEW_MODE#>&mode=setvalue";
    window.location=url+'&prop_id='+prop_id+"&new_value="+new_value;
   }
   return false;
@@ -86,7 +86,6 @@
     <td valign="top"><b><#LANG_UPDATED#></b></td>
     <td valign="top"><b><#LANG_LINKED_OBJECT#></b></td>
     <td valign="top"><b><#LANG_LINKED_PROPERTY#></b></td>
-    <td valign="top"><b><#LANG_STARRED#></b></td>
    </tr>
    [#begin PROPERTIES#]
    <tr>
@@ -116,15 +115,15 @@
    <select name="script_id">
     <option value="0">
     [#begin SCRIPTS#]
-        <option value="[#ID#]"[#if ID="<#SCRIPT_ID#>"#] selected[#endif#]>[#TITLE#]
+        <option value="[#ID#]"[#if ID="<#script_id#>"#] selected[#endif#]>[#TITLE#]
         [#end SCRIPTS#]
    </select>    
    <br>
-   <input type="radio" name="run_type" value="code"[#if SCRIPT_ID="0"#] checked[#endif#]> <#LANG_ONCHANGE_SCRIPT#>:<br>
+   <input type="radio" name="run_type" value="code"[#if script_id="0"#] checked[#endif#]> <#LANG_ONCHANGE_SCRIPT#>:<br>
  [#if ERRORS!=""#]
  <font color='red'>[#ERRORS#]</font><br>
  [#endif ERRORS#]   
- <textarea name="code" rows=4 cols=100 class="field span8">[#CODE#]</textarea>
+ <textarea name="code" rows=4 cols=100 class="field span8">[#code#]</textarea>
 
  </td>
 </tr>
@@ -149,6 +148,7 @@
 <tr>
  <td valign="top" colspan="2"><hr></td>
 </tr>
+
 <tr>
  <td align=right valign="top">
   <#LANG_LOG#>:

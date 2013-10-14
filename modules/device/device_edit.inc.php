@@ -98,30 +98,39 @@ CREATE TABLE `devices` (
   outHash($rec, $out);
   $out['LOG']=nl2br(@$out['LOG']);
 
-  if ($rec['device_id']) {
-   $properties=SQLSelect("SELECT * FROM device_properties WHERE DEVICE_ID='".$rec['device_id']."' ORDER BY sysname");
-   if ($this->mode=='update') {
-    $total=count($properties);
-    for($i=0;$i<$total;$i++) {
-     global ${'linked_object'.$properties[$i]['property_id']};
-     global ${'linked_property'.$properties[$i]['property_id']};
-     if (${'linked_object'.$properties[$i]['property_id']} && ${'linked_property'.$properties[$i]['property_id']}) {
-      $properties[$i]['linked_object']=${'linked_object'.$properties[$i]['property_id']};
-      $properties[$i]['linked_property']=${'linked_property'.$properties[$i]['property_id']};
-      SQLUpdate('device_properties', $properties[$i], 'property_id');
-     } elseif ($properties[$i]['linked_object'] || $properties[$i]['linked_property']) {
-      $properties[$i]['linked_object']='';
-      $properties[$i]['linked_property']='';
-      SQLUpdate('device_properties', $properties[$i], 'property_id');
+  if ($rec['device_id']) 
+  {
+     $properties=SQLSelect("SELECT * FROM device_properties WHERE DEVICE_ID='".$rec['device_id']."' ORDER BY sysname");
+     //обновис св-ва из плагина
+     $this->fetchPropertiesFromPlugin($rec['device_id']);
+
+     if ($this->mode=='update') 
+     {
+        $total=count($properties);
+        for($i=0;$i<$total;$i++) 
+        {
+           global ${'linked_object'.$properties[$i]['property_id']};
+           global ${'linked_property'.$properties[$i]['property_id']};
+           if (${'linked_object'.$properties[$i]['property_id']} && ${'linked_property'.$properties[$i]['property_id']}) {
+            $properties[$i]['linked_object']=${'linked_object'.$properties[$i]['property_id']};
+            $properties[$i]['linked_property']=${'linked_property'.$properties[$i]['property_id']};
+            SQLUpdate('device_properties', $properties[$i], 'property_id');
+           } elseif ($properties[$i]['linked_object'] || $properties[$i]['linked_property']) {
+            $properties[$i]['linked_object']='';
+            $properties[$i]['linked_property']='';
+            SQLUpdate('device_properties', $properties[$i], 'property_id');
+           }
+           global ${'starred'.$properties[$i]['property_id']};
+           if (${'starred'.$properties[$i]['property_id']}) {
+             //$properties[$i]['STARRED']=1;
+             SQLUpdate('device_properties', $properties[$i], 'property_id');
+           }
+        }
      }
-     global ${'starred'.$properties[$i]['property_id']};
-     if (${'starred'.$properties[$i]['property_id']}) {
-       //$properties[$i]['STARRED']=1;
-       SQLUpdate('device_properties', $properties[$i], 'property_id');
-     }
-    }
-   }
-   $out['PROPERTIES']=$properties;
+
+
+
+     $out['PROPERTIES']=$properties;
   }
 
   $out['SCRIPTS']=SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");

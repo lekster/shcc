@@ -481,7 +481,7 @@ curl_close($ch);
     $v['ID']=SQLInsert('pvalues', $v);
   }
 
-  if ($prop['KEEP_HISTORY']>0) {
+  if (@$prop['KEEP_HISTORY'] > 0) {
    SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$v['ID']."' AND TO_DAYS(NOW())-TO_DAYS(ADDED)>".(int)$prop['KEEP_HISTORY']);
    $h=array();
    $h['VALUE_ID']=$v['ID'];
@@ -562,14 +562,14 @@ curl_close($ch);
 
   }
 
-  if ($prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']]) {
+  if (@$prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']]) {
    $property_linked_history[$property][$prop['ONCHANGE']]=1;
    global $on_change_called;
    $params=array();
    $params['NEW_VALUE']=(string)$value;
    $params['OLD_VALUE']=(string)$old_value;
    $this->callMethod($prop['ONCHANGE'], $params);
-  } elseif ($prop['ONCHANGE'] && $property_linked_history[$property][$prop['ONCHANGE']]) {
+  } elseif (@$prop['ONCHANGE'] && $property_linked_history[$property][$prop['ONCHANGE']]) {
    unset($property_linked_history[$property][$prop['ONCHANGE']]);
   }
 

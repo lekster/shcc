@@ -8,27 +8,6 @@
 * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
 * @version 0.1
 */
-//
-//
-//check to make sure the file exists
-if(!function_exists('bcadd'))  {
-  if(file_exists("/opt/owfs/bin/bcadd.php"))  {
-    require "/opt/owfs/bin/bcadd.php";
-  } else if(file_exists(DIR_MODULES."device/bcadd.php"))  {
-    require DIR_MODULES."device/bcadd.php";
-  } else  {
-    die("File 'bcadd.php' is not found.\n");
-  }
-}
-
-//check to make sure the file exists
-if(file_exists("/opt/owfs/bin/ownet.php"))  {
-  require "/opt/owfs/bin/ownet.php";
-} else if(file_exists(DIR_MODULES."device/ownet.php"))  {
-  require DIR_MODULES."device/ownet.php";
-} else {
-  die("File 'ownet.php' is not found.\n");
-}
 
 
 class device extends module {
@@ -191,17 +170,9 @@ function usual(&$out) {
 *
 * @access public
 */
- function search_device(&$out) {
+ function search_device(&$out) 
+ {
   require(DIR_MODULES.$this->name.'/device_search.inc.php');
- }
- 
- /**
-* display edit/add
-*
-* @access public
-*/
- function edit_display(&$out, $id) {
-  require(DIR_MODULES.$this->name.'/display_edit.inc.php');
  }
  
 /**
@@ -209,29 +180,23 @@ function usual(&$out) {
 *
 * @access public
 */
- function edit_device(&$out, $id) {
+ function edit_device(&$out, $id) 
+ {
   require(DIR_MODULES.$this->name.'/device_edit.inc.php');
  }
  
-/**
-* device delete display
-*
-* @access public
-*/
- function delete_display($id) {
-  SQLExec("DELETE FROM owdisplays WHERE ID='".$id."'");
- }
- 
+
 /**
 * device delete record
 *
 * @access public
 */
- function delete_device($id) {
-  $rec=SQLSelectOne("SELECT * FROM owdevices WHERE ID='$id'");
+ function delete_device($id) 
+ {
+  //$rec=SQLSelectOne("SELECT * FROM owdevices WHERE ID='$id'");
   // some action for related tables
-  SQLExec("DELETE FROM owproperties WHERE DEVICE_ID='".$rec['ID']."'");
-  SQLExec("DELETE FROM owdevices WHERE ID='".$rec['ID']."'");
+  //SQLExec("DELETE FROM owproperties WHERE DEVICE_ID='".$rec['ID']."'");
+  //SQLExec("DELETE FROM owdevices WHERE ID='".$rec['ID']."'");
  }
 
 /**
@@ -260,46 +225,23 @@ function usual(&$out) {
 *
 * @access public
 */
- function updateDevices($force=0, $device_id=0) {
+ function updateDevices($force=0, $device_id=0) 
+ {
   $sql=1;
   if (!$force) {
-   $sql.=" AND CHECK_NEXT<='".date('Y-m-d H:i:s')."'";
+   $sql.=" AND check_next<='".date('Y-m-d H:i:s')."'";
   }
   if ($device_id) {
-   $sql.=" AND ID='".(int)$device_id."'";
+   $sql.=" AND device_id='".(int)$device_id."'";
   }
-  $devices=SQLSelect("SELECT ID, TITLE FROM owdevices WHERE ".$sql." ORDER BY CHECK_NEXT");
+  $devices=SQLSelect("SELECT device_id, title FROM devices WHERE ".$sql." ORDER BY check_next");
   $total=count($devices);
   for($i=0;$i<$total;$i++) {
-   echo "Checking device: ".$devices[$i]['TITLE']."\n";
-   $this->updateDevice($devices[$i]['ID']);
+   echo "Checking device: ".$devices[$i]['title']."\n";
+   $this->updateDevice($devices[$i]['device_id']);
   }
  }
 
- function initDisplays() {
-  $displays=SQLSelect("SELECT UDID FROM owdisplays");
-  $total=count($displays);
-  $ow=new OWNet(ONEWIRE_SERVER);
-  for($i=0;$i<$total;$i++) {
-   $ow->set($displays[$i]['UDID']."/LCD_H/message", str_pad("Starting...", 40));
-  }
- }
- 
- function updateDisplays($force=0, $display_id=0) {
-  $sql=1;
-  if (!$force) {
-   $sql.=" AND UPDATE_NEXT<='".time()."'";
-  }
-  if ($display_id) {
-   $sql.=" AND ID='".(int)$device_id."'";
-  }
-  $displays=SQLSelect("SELECT ID, TITLE FROM owdisplays WHERE ".$sql." ORDER BY UPDATE_NEXT");
-  $total=count($displays);
-  for($i=0;$i<$total;$i++) {
-   echo "Updating display: ".$displays[$i]['TITLE']."\n";
-   $this->updateDisplay($displays[$i]['ID']);
-  }
- }
  
 /**
 * Title
@@ -308,33 +250,9 @@ function usual(&$out) {
 *
 * @access public
 */
- function scanDevices() {
-  if (!defined('ONEWIRE_SERVER')) {
-   return 0;
-  }
-  $ow=new OWNet(ONEWIRE_SERVER);
-  $tmp=$ow->get("/",OWNET_MSG_DIR,false);
-  if (!$tmp) {
-   return 0;
-  }
-  $devices=explode(',', $tmp);
-  $total=count($devices);
-  for($i=0;$i<$total;$i++) {
-
-   if (
-    $devices[$i]=='/alarm' ||
-    $devices[$i]=='/structure' ||
-    $devices[$i]=='/system' ||
-    $devices[$i]=='/settings' ||
-    $devices[$i]=='/uncached' ||
-    $devices[$i]=='/simultaneous' ||
-    $devices[$i]=='/statistics' ||
-    preg_match('/bus\.\d+$/', $devices[$i]) ||
-    0
-   ) {
-    continue;
-   }
-   $udid=preg_replace('/^\//', '', $devices[$i]);
+ function scanDevices() 
+ {
+  /*
    $rec=SQLSelectOne("SELECT * FROM owdevices WHERE UDID='".$udid."'");
    if (!$rec['ID']) {
     $rec['UDID']=$udid;
@@ -346,6 +264,7 @@ function usual(&$out) {
    }
    $this->updateDevice($rec['ID']);
   }
+  */
  }
 
 
@@ -369,9 +288,18 @@ function usual(&$out) {
   if (!$property['property_id']) {
    return 0;
   }
+  /****************/
 
-  //$ow=new OWNet(ONEWIRE_SERVER);
-  //$ow->set($property['PATH'],$value);
+    $device=SQLSelectOne("SELECT * FROM devices WHERE device_id='".$property['device_id']."'");
+    if (!isset($device['device_id']))
+    {
+      return 0;
+    }
+    $devicePluginId = @$device['device_plugin_id'];
+    $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
+    if (!$plugin) return 0;
+    $ret = LoadDevicePlugin(@$plugin['name']);
+    $ret->SetPortVal($device['raw_id'], $property['sysname'], $value);
 
   if ($update_device)
   {
@@ -381,267 +309,125 @@ function usual(&$out) {
  }
 
 
- /**
- * Title
- *
- * Description
- *
- * @access public
- */
-  function updateStarred() {
-
-   if (!defined('ONEWIRE_SERVER')) {
-    return 0;
-   }
-
-   $ow=new OWNet(ONEWIRE_SERVER);
-
-   $properties=SQLSelect("SELECT owproperties.*, owdevices.SCRIPT_ID, owdevices.CODE, owdevices.UDID FROM owproperties, owdevices WHERE owdevices.ID=owproperties.DEVICE_ID AND owproperties.STARRED=1 ORDER BY owproperties.UPDATED DESC");
-   $total=count($properties);
-
-   for($i=0;$i<$total;$i++) {
-    $prec=$properties[$i];
-    $old_value=$prec['VALUE'];
-    $value=trim($ow->get($prec['PATH'],OWNET_MSG_READ,false));
-
-    if (!$value) {
-     $device='/'.$prec['UDID'];
-     $tmp=$ow->get($device,OWNET_MSG_DIR,false);
-     if (!is_null($tmp)) {
-      continue;
-     }
-    }
-
-
-    if (!is_null($value) && $value!=$old_value) {
-     $prec['VALUE']=$value;
-     $prec['UPDATED']=date('Y-m-d H:i:s');
-
-     $script_id=$prec['SCRIPT_ID'];
-     $code=$prec['CODE'];
-
-     unset($prec['SCRIPT_ID']);
-     unset($prec['CODE']);
-     unset($prec['UDID']);
-     SQLUpdate('owproperties', $prec);
-
-
-     if ($prec['LINKED_OBJECT'] && $prec['LINKED_PROPERTY']) {
-      sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], 1);
-     }
-
-     $changed_values=array();
-     $changed_values[$prec['SYSNAME']]=array('OLD_VALUE'=>$old_value, 'VALUE'=>$prec['VALUE']);
-
-     $params=$changed_values;
-     if ($script_id) {
-      runScript($script_id, $params);
-     } elseif ($code) {
-      eval($code);
-     }
-    }
-   }
-  }
-
-/**
-* Title
-*
-* Description
-*
-* @access public
-*/
-function updateDisplay($id) {
-  if (!defined('ONEWIRE_SERVER')) {
-   return 0;
-  }
-
-  $rec=SQLSelectOne("SELECT * FROM owdisplays WHERE ID='".$id."'");
-  if (!$rec['ID']) {
-   return 0;
-  }
-
-  $ow=new OWNet(ONEWIRE_SERVER);
-  $device='/'.$rec['UDID'];
-
-  $rec['UPDATE_LATEST']=time();
-  $rec['UPDATE_NEXT']=time()+(int)$rec['UPDATE_INTERVAL'];
-  
-  $rec['VALUE']=str_replace("\r", '', $rec['VALUE']);
-  $text = explode("\n", $rec['VALUE']);
-
- 
-  for ($i = 1; $i <= $rec['ROWS']; $i++) {
-        $line = $i.",1:".$text[$i-1];
-        $line = processTitle($line);
-    $ow->set($device."/LCD_H/screenyx", str_pad($line, 40));
-  }
-  
-  SQLUpdate('owdisplays', $rec);
-}
-
 function isAlive($rawDeviceId)
 {
 
   return 1;
 }
 
+function fetchPropertiesFromPlugin($deviceId)
+{
+  //обновляем девайс и его св-ва, точнее получаем значения для всех св-в
+    $device=SQLSelectOne("SELECT * FROM devices WHERE device_id='".$deviceId."'");
+    if (!isset($device['device_id']))
+    {
+      return 0;
+    }
+    $devicePluginId = @$device['device_plugin_id'];
+    $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
+    if (!$plugin) return 0;
+    $ret = LoadDevicePlugin(@$plugin['name']);
+   
+    if (isset($device) && isset($plugin) && is_object($ret))
+    {
+        //а тут обновляем все св-ва
+        //для начала получим их из плагина
+        $propertiesArr = $ret->GetPorts();
+        //var_dump($propertiesArr);die();
+         $properties=array_keys($propertiesArr);
+         $totalp=count($properties);
+         for($ip=0;$ip<$totalp;$ip++) 
+         {
+            $portName = $properties[$ip];   
+            $sysname = $portName;
+            $prec=SQLSelectOne("SELECT * FROM device_properties WHERE device_id='".$device['device_id']."' AND sysname='".DBSafe($sysname)."'");
+            if (!$prec['property_id']) 
+            {
+               $prec['device_id']=$device['device_id'];
+               $prec['sysname']=$sysname;
+               $prec['path']=$properties[$ip];
+               $prec['property_id']=SQLInsert('device_properties', $prec, 'property_id');
+            }
+          }
+    }
+
+
+}
+
+
+/*
+    public abstract function GetName();
+    public abstract function GetVersion();
+    public abstract function CheckState($device);
+    public abstract function GetPortVal($device, $port);
+    public abstract function GetPorts(); //return array ($port => $options,)
+*/
 
  function updateDevice($id)
  {
 
+    $this->fetchPropertiesFromPlugin($id);
+
     //обновляем девайс и его св-ва, точнее получаем значения для всех св-в
-
-
-
-  $rec=SQLSelectOne("SELECT * FROM devices WHERE device_id='".$id."'");
-  if (!isset($rec['device_id']))
-  {
-   return 0;
-  }
-
-  $devicePluginId = @$device['device_plugin_id'];
-  $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
-  if (!$plugin) return 0;
-
-  $ret = LoadDevicePlugin(@$plugin['name']);
-  if (isset($device) && isset($plugin) && is_object($ret))
-  {
-      //а тут обновляем все св-ва
-
-  }
-
-  /*
-      $deviceId = @$jb['device_id'];
-    if (isset($deviceId) && !isset($devices[$deviceId]))
+    $device=SQLSelectOne("SELECT * FROM devices WHERE device_id='".$id."'");
+    if (!isset($device['device_id']))
     {
-      $device = SQLSelectOne("select * from devices where device_id = '". DBSafe($deviceId) . "'");
-      $devices[$deviceId] = $device;
-    } 
-    $device = @$devices[$deviceId];
-
-
-    $devicePluginId = @$device['device_plugin_id'];
-    if (isset($devicePluginId) && !isset($plugins[$devicePluginId]))
-    {
-        $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
-        $plugins[$devicePluginId] = $plugin;
+      return 0;
     }
-    $plugin = @$plugins[$devicePluginId];
-      
-    //var_dump($device);
-    //var_dump($plugin);
-    
+    $devicePluginId = @$device['device_plugin_id'];
+    $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
+    if (!$plugin) return 0;
     $ret = LoadDevicePlugin(@$plugin['name']);
+   
+    $propertiesArr = SQLSelect("SELECT * FROM device_properties WHERE device_id='".$device['device_id']. "'");
+    $changed = false;
     if (isset($device) && isset($plugin) && is_object($ret))
     {
-
-        $jb['start_execute_at']=date('Y-m-d H:i:s');
-        $jb['result_status'] = 'executing...';
-        SQLUpdate('device_plugin_job', $jb, 'device_plugin_job_id');
-
-        $resultStatus = 'done';
-        switch($jb['command'])
-        {
-            case 'SetPortVal':
-              $result = $ret->SetPortVal($device['raw_id'],$jb['port'],$jb['val']);
-  
-
-  */
-
-
-
-
-
-
-
-
-
-  //$ow=new OWNet(ONEWIRE_SERVER);
-  $device='/'.$rec['raw_id'];
-
-  $rec['check_latest']=date('Y-m-d H:i:s');
-  $rec['check_next']=date('Y-m-d H:i:s', time()+(int)$rec['online_interval']);
-
-  $old_status=$rec['status'];
-  $rec['status'] = $this->isAlive($device);
-  
-  SQLUpdate('devices', $rec, 'device_id');
-  var_dump($rec);
-  die();
-
-
-   if ($rec['status']!=$old_status && ($rec['script_id'] || $rec['code'])) 
-   {
-      $params=array();
-      $params['device']=$device;
-      $params['status']=$rec['status'];
-      $params['status_changed']=1;
-      if ($rec['script_id']) 
-      {
-        runScript($rec['script_id'], $params);
-      } 
-      elseif ($rec['code']) 
-      {
-         eval($rec['code']);
-      }
-   }
-
-   if (!$rec['status']) 
-   {
-      return 0;
-   }
-
-   $changed_values=array();
-   $changed=0;
-   $properties=explode(',', $tmp);
-   $totalp=count($properties);
-   for($ip=0;$ip<$totalp;$ip++) 
-   {
-      $sysname=str_replace($device.'/', '', $properties[$ip]);
-      //echo $properties[$ip]." (".$sysname."): ";
-      $prec=SQLSelectOne("SELECT * FROM device_properties WHERE DEVICE_ID='".$rec['ID']."' AND SYSNAME='".DBSafe($sysname)."'");
-      if (!$prec['ID']) 
-      {
-         $prec['DEVICE_ID']=$rec['ID'];
-         $prec['sysname']=$sysname;
-         $prec['path']=$properties[$ip];
-         $prec['property_id']=SQLInsert('owproperties', $prec, 'property_id');
-      }
-      $old_value=$prec['VALUE'];
-      $value=trim($ow->get($properties[$ip],OWNET_MSG_READ,false));
-      if (!is_null($value) && $old_value!=$value) 
-      {
-          //if (1) {
-         // value updated
-         $changed=1;
-         $changed_values[$prec['sysname']]=array('OLD_VALUE'=>$old_value, 'value'=>$prec['value']);
-         $prec['value']=$value;
-         $prec['updated']=date('Y-m-d H:i:s');
-         SQLUpdate('device_properties', $prec, 'property_id');
-         //$rec['LOG']=date('Y-m-d H:i:s')." ".$prec['SYSNAME'].": ".$prec['VALUE']."\n".$rec['LOG'];
-         SQLUpdate('devices', $rec, 'device_id');
-         if ($prec['linked_object'] && $prec['linked_property']) 
+        //а тут обновляем все св-ва
+         $totalp=count($propertiesArr);
+         for($ip=0;$ip<$totalp;$ip++) 
          {
-            //!!!!!!!!!! вот тут обновляется св-во глоб объекта
-            //var_dump('set');
-            $facade = Majordomo_Facade::getInstance();
-            $facade->setPropertyToObjectByName($prec['linked_object'], $prec['linked_property'], $prec['value'], false);
-            //sg($prec['LINKED_OBJECT'].'.'.$prec['LINKED_PROPERTY'], $prec['VALUE'], 1);
+            $prec= $propertiesArr[$ip];
+            
+            $oldPropertyVal=@$prec['value'];
+            $value = $ret->GetPortVal($device['raw_id'], $prec['sysname']);
+            //var_dump($prec);
+            if (!is_null($value) && $oldPropertyVal!=$value) 
+            {
+               $changed = true;
+               //$changed_values[$prec['sysname']]=array('old_value'=>$oldPropertyVal, 'value'=>$prec['value']);
+               $prec['value']=$value;
+               $prec['updated']=date('Y-m-d H:i:s');
+               SQLUpdate('device_properties', $prec, 'property_id');
+               //$device['LOG']=date('Y-m-d H:i:s')." ".$prec['sysname'].": ".$prec['value']."\n".$device['LOG'];
+               SQLUpdate('devices', $device, 'device_id');
+               if ($prec['linked_object'] && $prec['linked_property']) 
+               {
+                  //die('up linked');
+                  $facade = Majordomo_Facade::getInstance();
+                  $facade->setPropertyToObjectByName($prec['linked_object'], $prec['linked_property'], $prec['value'], false);
+               }
+            }
+            
          }
-      }
-   }
 
-   if ($changed) 
-   {
-      $params=$changed_values;
-      $params['DEVICE']=$device;
-      if ($rec['script_id']) 
-      {
-        runScript($rec['script_id'], $params);
-      } elseif ($rec['code']) {
-        eval($rec['code']);
-      }
-   }
+         //$changed = true;
+         if ($changed) 
+         {
+            //$params=$changed_values;
+            $params['device']=$device;
+            if (@$device['script_id']) 
+            {
+
+              runScript($device['script_id'], $params);
+            } elseif (@$device['code']) {
+              eval($device['code']);
+            }
+         }
+    }
+
+
+    
 
  }
 

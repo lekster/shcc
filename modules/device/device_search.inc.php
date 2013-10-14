@@ -11,7 +11,7 @@
 
 
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT * FROM devices WHERE 1=1 ORDER BY device_id DESC");
+  $res=SQLSelect("SELECT * FROM devices WHERE 1=1 ORDER BY device_id asc");
   if (@$res[0]['device_id']) 
   {
    //paging($res, 50, $out); // search result paging
