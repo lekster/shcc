@@ -410,6 +410,25 @@ function runDevicePluginJob()
               $result = $ret->SetPortVal($device['raw_id'],$jb['port'],$jb['val']);
             break; 
 
+            case 'SetDeviceProperty':
+              require_once('modules/device/device.class.php');
+              $dev=new device();
+              $propertyName = $jb['port'];
+
+              $property=SQLSelectOne("SELECT * FROM device_properties WHERE device_id='".$deviceId."'" . "and sysname='".DBSafe($propertyName)."'" );
+              //var_dump($property);die();
+              if (!$property['property_id'])
+              {
+                $result = null;
+                $resultStatus = 'error';
+              }
+              else
+              {
+                $dev->setProperty($property['property_id'], $jb['val'], true); 
+                $result = null;
+              }
+            break;
+
             default:
                $result = null;
                $resultStatus = 'error';

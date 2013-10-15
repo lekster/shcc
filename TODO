@@ -25,14 +25,14 @@ TODO
 
 
 'CacheDir' => '/home/projects/data/majordomo/cache/',
-./cached/ +
+./cached/
 ./cms/
-./debmes/ +
+./debmes/
 ./modules/
 ./templates/
 ./objects/
 ./rc/
-./saverestore/ + 
+./saverestore/ 
 
 
 
@@ -155,11 +155,25 @@ CREATE TABLE `device_plugin_job` (
 add record into project_modules
 add record into admin_users
 
+
+
 *********************************
 
 1) Автоматически добавлять св-ва из плагина +
 2) реализовать скрипт сбора данных +
 3) реализовать API для обновления данных внешними системами
-4) реализовать Readonly св-ва
+4) реализовать Readonly св-ва ?
 
 alter table script set text
+
+
+
+в сценах разобраться как будет работать клик с новыми ус-вами
+как вариант runDevicePluginJob() изменить логику работы на device->setProperty
+либо сделать доп ветку по команде = setProperty
+
+вот так выглядит установка св-ва device через постановку задачи
+addDevicePluginJob('dev1124111114', 'SetProperty', 'p1', '7', '', '', null);
+
+соответственно при выполнении из сцен должно вызываться нечто такое
+если на каждый девайс будет свой объект, то в его методе должно выполняться нечто такое

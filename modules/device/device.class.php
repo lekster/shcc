@@ -374,6 +374,11 @@ function fetchPropertiesFromPlugin($deviceId)
     {
       return 0;
     }
+
+    $device['CHECK_LATEST']=date('Y-m-d H:i:s');
+    $device['CHECK_NEXT']=date('Y-m-d H:i:s', time()+(int)$device['online_interval']);
+    SQLUpdate('devices', $device, 'device_id');
+
     $devicePluginId = @$device['device_plugin_id'];
     $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
     if (!$plugin) return 0;
