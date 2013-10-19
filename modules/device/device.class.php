@@ -234,6 +234,7 @@ function usual(&$out) {
   if ($device_id) {
    $sql.=" AND device_id='".(int)$device_id."'";
   }
+  
   $devices=SQLSelect("SELECT device_id, title FROM devices WHERE ".$sql." ORDER BY check_next");
   $total=count($devices);
   for($i=0;$i<$total;$i++) {
@@ -365,9 +366,7 @@ function fetchPropertiesFromPlugin($deviceId)
 
  function updateDevice($id)
  {
-
     $this->fetchPropertiesFromPlugin($id);
-
     //обновляем девайс и его св-ва, точнее получаем значения для всех св-в
     $device=SQLSelectOne("SELECT * FROM devices WHERE device_id='".$id."'");
     if (!isset($device['device_id']))
@@ -385,6 +384,7 @@ function fetchPropertiesFromPlugin($deviceId)
     $ret = LoadDevicePlugin(@$plugin['name']);
    
     $propertiesArr = SQLSelect("SELECT * FROM device_properties WHERE device_id='".$device['device_id']. "'");
+
     $changed = false;
     if (isset($device) && isset($plugin) && is_object($ret))
     {
