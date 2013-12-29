@@ -82,6 +82,11 @@ class DevicePlugin_plugin_example extends AbstractDevicePlugin
 
     public function GetPortOptions($port) {}
 
+    public function IsAlive($device)
+    {
+        return false;
+    }
+
 
 }
 

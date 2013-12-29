@@ -8,6 +8,7 @@ abstract class AbstractDevicePlugin
 
     public static function LoadDevicePlugin($pluginName)
     {
+        //die('asd1');
         if (isset(self::$pluginContainer[$pluginName]))
             return self::$pluginContainer[$pluginName];
         
@@ -17,6 +18,7 @@ abstract class AbstractDevicePlugin
             $ret = @include_once($classFilePath);
             if (!$ret)
             {
+                //var_dump($ret);
                 //$this->logger->error("Plugin FILE NOT FOUND", $classFilePath);
                 return false;
             }
@@ -34,6 +36,7 @@ abstract class AbstractDevicePlugin
     public abstract function SetPortVal($device, $port, $val);
     public abstract function GetPorts(); //return array ($port => $options,)
     public abstract function GetPortOptions($port);
+    public abstract function IsAlive($device);
 
 }
 

@@ -93,7 +93,7 @@ Action URL:
 <div class="control-group">
         <label class="control-label"><#LANG_TYPE#>:</label>
         <div class="controls">
-                <select name="type">
+                <select name="type" id="Select_type" onChange="jsFunction()" >
                         <option value="">select
                         <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
                         <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
@@ -115,6 +115,232 @@ Action URL:
 </div>
 
 
+
+<script language="javascript">
+window.onload = function(){
+    jsFunction();
+};
+</script>
+
+<script language="javascript">
+ function jsFunction()
+ {
+  //alert('123');
+  var myselect = document.getElementById("Select_type");
+  var val = myselect.options[myselect.selectedIndex].value;
+  //alert(val);
+  if (val=="window")
+  {
+    $('#window_block').show();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').hide();
+    $('#l_linked_object').hide();
+    $('#l_actions').hide();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').show();
+    $('#l_window_pos').show();
+
+
+  }
+  else if (val=="plusminus")
+  {
+   $('#window_block').hide();
+   $('#l_min_value').show();
+   $('#l_max_value').show();
+   $('#l_step_value').show();
+   $('#l_data').hide();
+   $('#l_cur_value').show();
+   $('#l_linked_object').show();
+   $('#l_actions').show();
+   $('#l_command').hide();
+   $('#l_button_pos').hide();
+   $('#l_url').hide();
+   $('#l_window_pos').hide();
+
+  }
+  else if (val=="sliderbox")
+  {
+   $('#window_block').hide();
+   $('#l_min_value').show();
+   $('#l_max_value').show();
+   $('#l_step_value').show();
+   $('#l_data').hide(); 
+   $('#l_cur_value').show();
+   $('#l_linked_object').show();
+   $('#l_actions').show();
+   $('#l_command').hide();
+   $('#l_button_pos').hide();
+   $('#l_url').hide();
+   $('#l_window_pos').hide();
+
+
+  }
+  else if (val=="selectbox")
+  {
+    $('#window_block').hide();
+    $('#l_data').show();
+    $('#l_cur_value').show();
+    $('#l_linked_object').show();
+    $('#l_actions').show();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+
+  }
+  else if (val=="switch")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').show();
+    $('#l_linked_object').show();
+    $('#l_actions').show();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+
+  }
+  else if (val=="timebox")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').show();
+    $('#l_linked_object').show();
+    $('#l_actions').show();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+
+  }
+  else if (val=="textbox")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').show();
+    $('#l_linked_object').show();
+    $('#l_actions').show();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+
+  }
+  else if (val=="custom")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').show();
+    $('#l_cur_value').hide();
+    $('#l_linked_object').show();
+    $('#l_actions').hide();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+
+  }
+  else if (val=="label")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').hide();
+    $('#l_linked_object').hide();
+    $('#l_actions').hide();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+
+  }
+  else if (val=="url")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').hide();
+    $('#l_linked_object').hide();
+    $('#l_actions').hide();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').show();
+    $('#l_window_pos').hide();
+
+  }
+  else if (val=="command")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').hide();
+    $('#l_linked_object').hide();
+    $('#l_actions').hide();
+    $('#l_command').show();
+    $('#l_button_pos').hide();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+  }
+  else if (val=="button")
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').hide();
+    $('#l_linked_object').hide();
+    $('#l_actions').show();
+    $('#l_command').hide();
+    $('#l_button_pos').show();
+    $('#l_url').hide();
+    $('#l_window_pos').hide();
+  }
+  else
+  {
+    $('#window_block').hide();
+    $('#l_min_value').hide();
+    $('#l_max_value').hide();
+    $('#l_step_value').hide();
+    $('#l_data').hide();
+    $('#l_cur_value').hide();
+    $('#l_linked_object').hide();
+    $('#l_actions').hide();
+    $('#l_command').hide();
+    $('#l_button_pos').hide();
+    $('#l_url').show();
+    $('#l_window_pos').show();
+
+  }
+  //$('#condition_block_new').hide();
+  // $('#condition_advanced_block_new').show();
+}
+</script>
+
+
+
 <div class="control-group">
         <label class="control-label"><#LANG_ICON#>:</label>
         <div class="controls">
@@ -131,41 +357,56 @@ Action URL:
         </div>
 </div>
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"#]
+
+<!-- <div id="condition_block_new"[#if STATE_IS_DYNAMIC!="1"#] style="display:none"[#endif#]> -->
+
+<!-- 
+<div id="window_block" style="display:none">
 
 <div class="control-group">
+        <label class="control-label"> <#LANG_URL#>:</label>
+        <div class="controls">
+                <input type="text" name="url" value="[#URL#]" size="50">
+        </div>
+</div>
+
+
+
+</div>
+
+-->
+
+<!-- ******************************************************************************* -->
+
+<div id="l_min_value" style="display:none" class="control-group" >
         <label class="control-label"><#LANG_MIN_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="min_value" value="[#MIN_VALUE#]" size="20">
         </div>
 </div>
 
-<div class="control-group">
+<div id="l_max_value" style="display:none" class="control-group">
         <label class="control-label"><#LANG_MAX_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="max_value" value="[#MAX_VALUE#]" size="20">
         </div>
 </div>
 
-<div class="control-group">
+<div id="l_step_value" style="display:none" class="control-group">
         <label class="control-label"><#LANG_STEP_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="step_value" value="[#STEP_VALUE#]" size="20">
         </div>
 </div>
 
-[#endif TYPE#]
 
-[#if TYPE=="selectbox" || TYPE=="custom"#]
-
-<div class="control-group">
+<div id="l_data" style="display:none" class="control-group">
         <label class="control-label"><#LANG_DATA#>:</label>
         <div class="controls">
                 <textarea name="data" cols="50" rows="5">[#DATA#]</textarea>
         </div>
 </div>
 
-[#endif TYPE#]
 
 <div class="control-group">
         <label class="control-label"><#LANG_AUTO_UPDATE_PERIOD#>:</label>
@@ -174,29 +415,24 @@ Action URL:
         </div>
 </div>
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
 
-<div class="control-group">
+<div id="l_cur_value" style="display:none" class="control-group">
         <label class="control-label"><#LANG_CURRENT_VALUE#>:</label>
         <div class="controls">
                 <input type="text" name="cur_value" value="" size="20"> (<b>[#CUR_VALUE#]</b>)
         </div>
 </div>
 
-[#endif TYPE#]
-
-[#if TYPE=="plusminus" || TYPE=="sliderbox"  || TYPE=="selectbox" || TYPE=="switch" || TYPE=="custom" || TYPE=="timebox" || TYPE=="textbox"#]
-
-<div class="control-group">
+<div id="l_linked_object" style="display:none" class="control-group">
         <label class="control-label"><#LANG_LINKED_OBJECT#>.<#LANG_PROPERTY#>:</label>
         <div class="controls">
                 <input type="text" name="linked_object" value="[#LINKED_OBJECT#]" size="20">.<input type="text" name="linked_property" value="[#LINKED_PROPERTY#]" size="20">
         </div>
 </div>
 
-[#endif TYPE#]
 
-[#if TYPE=="plusminus" || TYPE=="sliderbox" || TYPE=="selectbox" || TYPE=="button" || TYPE=="switch" || TYPE=="timebox" || TYPE=="textbox"#]
+
+<div id="l_actions" style="display:none" class="control-group">
 
 <div class="control-group">
         <label class="control-label"><#LANG_ONCHANGE_OBJECT#>.<#LANG_METHOD#>:</label>
@@ -224,40 +460,38 @@ Action URL:
         </div>
 </div>
 
-[#endif TYPE#]
-
-[#if TYPE="command"#]
-<!-- COMMAND (varchar) -->
-
-<#LANG_COMMAND#>
-<input type="text" name="command" value="[#COMMAND#]" size="50">
+</div>
 
 
-[#endif TYPE#]
+<div id="l_command" style="display:none" class="control-group">
+        <label class="control-label"><#LANG_COMMAND#>:</label>
+        <div class="controls">
+                <input type="text" name="command" value="[#COMMAND#]" size="50">
+        </div>
+</div>
 
-[#if TYPE=="button"#]
+
 <!-- URL (varchar) -->
-<div class="control-group">
+<div id="l_button_pos" style="display:none"  class="control-group">
         <label class="control-label"> <#LANG_INLINE_POSITION#>:</label>
         <div class="controls">
                 <label><input type="radio" name="inline" value="1"[#if INLINE="1"#] checked[#endif#]> <#LANG_YES#></label>
                 <label><input type="radio" name="inline" value="0"[#if INLINE!="1"#] checked[#endif#]> <#LANG_NO#></label>
         </div>
 </div>
-[#endif TYPE#]
 
 
-[#if TYPE=="window" || TYPE=="url" || TYPE==""#]
 <!-- URL (varchar) -->
-<div class="control-group">
+<div id="l_url" style="display:none" class="control-group">
         <label class="control-label"> <#LANG_URL#>:</label>
         <div class="controls">
                 <input type="text" name="url" value="[#URL#]" size="50">
         </div>
 </div>
-[#endif TYPE#]
 
-[#if TYPE=="window" || TYPE==""#]
+
+<div id="l_window_pos" style="display:none" class="control-group">
+
 <div class="control-group">
         <label class="control-label"><#LANG_TARGET_WINDOW#>:</label>
         <div class="controls">
@@ -279,7 +513,9 @@ Action URL:
                 <input type="text" name="height" value="[#HEIGHT#]">
         </div>
 </div>
-[#endif TYPE#]
+
+</div>
+
 
 [#endif EXT_ID#]
 

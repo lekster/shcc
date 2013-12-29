@@ -236,6 +236,7 @@ function usual(&$out) {
   }
   
   $devices=SQLSelect("SELECT device_id, title FROM devices WHERE ".$sql." ORDER BY check_next");
+
   $total=count($devices);
   for($i=0;$i<$total;$i++) {
    echo "Checking device: ".$devices[$i]['title']."\n";
@@ -324,11 +325,12 @@ function fetchPropertiesFromPlugin($deviceId)
     {
       return 0;
     }
+
     $devicePluginId = @$device['device_plugin_id'];
     $plugin = SQLSelectOne("select * from device_plugin where device_plugin_id = '". DBSafe($devicePluginId) . "'");
     if (!$plugin) return 0;
+    
     $ret = LoadDevicePlugin(@$plugin['name']);
-   
     if (isset($device) && isset($plugin) && is_object($ret))
     {
         //а тут обновляем все св-ва
@@ -373,7 +375,6 @@ function fetchPropertiesFromPlugin($deviceId)
     {
       return 0;
     }
-
     $device['CHECK_LATEST']=date('Y-m-d H:i:s');
     $device['CHECK_NEXT']=date('Y-m-d H:i:s', time()+(int)$device['online_interval']);
     SQLUpdate('devices', $device, 'device_id');
@@ -388,6 +389,15 @@ function fetchPropertiesFromPlugin($deviceId)
     $changed = false;
     if (isset($device) && isset($plugin) && is_object($ret))
     {
+        if ($ret->isAlive($device['raw_id']) !== FALSE)
+        {
+            $device['status'] = 1;
+        } 
+        else
+        {
+            $device['status'] = 0;
+        } 
+        SQLUpdate('devices', $device, 'device_id');
         //а тут обновляем все св-ва
          $totalp=count($propertiesArr);
          for($ip=0;$ip<$totalp;$ip++) 

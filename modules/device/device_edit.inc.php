@@ -41,7 +41,8 @@ CREATE TABLE `devices` (
    global $title;
    $rec['title']=$title;
 
-
+  global $raw_id;
+  $rec['raw_id']=$raw_id;
 
    global $code;
    $rec['code']=$code;

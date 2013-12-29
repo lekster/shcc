@@ -560,6 +560,20 @@ curl_close($ch);
   }
 
 
+  if (file_exists(DIR_MODULES.'/device/device.class.php')) 
+  {
+     $device_properties=SQLSelect("SELECT property_id FROM device_properties WHERE LINKED_OBJECT = '".DBSafe($this->object_title)."' AND LINKED_PROPERTY = '".DBSafe($property)."'");
+     $total=count($device_properties);
+     if ($total) 
+     {
+      include_once(DIR_MODULES.'/device/device.class.php');
+      $device=new device();
+      for($i=0;$i<$total;$i++) {
+       $device->setProperty($device_properties[$i]['property_id'], $value);
+      }
+     }
+  }
+
   }
 
   if (@$prop['ONCHANGE'] && !$property_linked_history[$property][$prop['ONCHANGE']]) {

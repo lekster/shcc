@@ -16,6 +16,8 @@
 
 <script language="javascript">
  function menuClicked(id, parent_id, sub_list, win, winTitle, command, url, width, height) {
+  
+  //alert(url);
   if (sub_list!=id) {
    //$('sub'+parent_id).style.display='none';
    if ($('sub'+id).style.display=='none') {
@@ -28,25 +30,28 @@
    }
   } else {
 
-  if (parent.location == window.location) {
-   if (url!='') {
-    window.location=url;
-    //openTWindow(win, winTitle, url, width, height);
-   }
-  } else {
-
-   //command
-   if (command!='') {
-    //alert(command);
-    parent.eval(command);
-   }
-   if (url!='') {
-    if (width==0 && height==0) {
-     parent.openNewTab(winTitle, url);
-    } else {
-     parent.openTWindow(win, winTitle, url, width, height);
-    }
-   }
+  if (parent.location == window.location) 
+  { 
+     if (url!='') {
+      window.location=url;
+      //openTWindow(win, winTitle, url, width, height);
+     }
+  } 
+  else 
+  { 
+      //alert(url);
+     //command
+     if (command!='') {
+      alert(command);
+      parent.eval(command);
+     }
+     if (url!='') {
+      if (width==0 && height==0) {
+       parent.openNewTab(winTitle, url);
+      } else {
+       parent.openTWindow(win, winTitle, url, width, height);
+      }
+     }
 
   }
 
