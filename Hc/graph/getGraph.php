@@ -12,27 +12,41 @@
 chdir(dirname(dirname(dirname(__FILE__))));
 require_once "Hc/Highchart.php";
 
+
+//http://192.168.1.120:85/Hc/graph/getGraph.php?obj=ThisComputer&property=d_on&graphType=1&aggregationType=0
+//http://192.168.1.120:85/Hc/graph/getGraph.php?obj=ThisComputer&property=d_on&graphType=1&aggregationType=0&dateStart=2013-12-30
+//http://192.168.1.120:85/Hc/graph/getGraph.php?obj=ThisComputer&property=1w_temp&graphType=1&aggregationType=2
+
 $objectName = @$_GET['obj'];
 $propertyName = @$_GET['property'];
+$graphType = @$_GET['graphType'];
+$aggregationType = @$_GET['aggregationType']; // 0 -sec, 1- min, 2 - hour, 3 - day, 4 - month, 5 - year
+$dateStart = isset($_GET['dateStart']) ? $_GET['dateStart'] : '2000-01-01 00:00:00';
+$dateEnd = isset($_GET['dateEnd']) ? date("Y-m-d H:i:s", strtotime($_GET['dateEnd'])) : date("Y-m-d H:i:s");
+
+if (!isset($objectName) || !isset($propertyName) || !isset($graphType) || !isset($aggregationType))
+{
+	echo "usage: " . "http://192.168.1.120:85/Hc/graph/getGraph.php?obj=ThisComputer&property=d_on&graphType=1&aggregationType=0&dateStart=2013-12-30&dateEnd=2013-12-31";
+	die();
+}
+
+//$objectName = 'ThisComputer';
+//$propertyName = 'd_on';
+//$graphType = 1;
+//$aggregationType = 0; // 0 -sec, 1- min, 2 - hour, 3 - day, 4 - month, 5 - year
+//$dateStart = '2013-12-01 00:00:00';
+//$dateEnd = '2013-12-01 00:01:00';
 
 
-$objectName = 'ThisComputer';
-$propertyName = 'dev1';
-$graphType = 3;
-$aggregationType = 0; // 0 -sec, 1- min, 2 - hour, 3 - day, 4 - month, 5 - year
-$dateStart = '2013-12-01 00:00:00';
-$dateEnd = '2013-12-01 00:01:00';
 
-
-
-var_dump($propertyName); 
+//var_dump($propertyName); 
 //var_dump(`pwd`);die();
 
 //---------------------------- Standard inclusions 
  
  include_once("./lib/loader.php");
  require_once ("class.Facade.php");
- $facade = Majordomo_Facade::getInstance("./config/current/global.php");
+ $facade = Majordomo_Facade::getInstance("./config/stable/global.php");
 
  include_once(DIR_MODULES."application.class.php");
  $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); //connecting to database
@@ -42,13 +56,13 @@ var_dump($propertyName);
 //die('asd');
 
 $object = getObject($objectName);
-var_dump($object);
+//var_dump($object);
 
 $prop_id = $object->getPropertyByName($propertyName, $object->class_id, $object->id);
-var_dump($prop_id);
+//var_dump($prop_id);
 
 $pvalue=SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='".$prop_id."' AND OBJECT_ID='".$object->id."'");
-var_dump($pvalue);
+//var_dump($pvalue);
 
 
 if ($graphType == 1)
@@ -58,7 +72,7 @@ $sql = '';
 switch ($aggregationType) 
 {
 	case 0:
-		$sql = "SELECT * FROM phistory WHERE VALUE_ID = {$pvalue['ID']} order by ADDED";
+		$sql = "SELECT * FROM phistory WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd' order by ADDED";
 		# code...
 		break;
 	
@@ -66,7 +80,8 @@ switch ($aggregationType)
 		$sql = "
 			select dt as ADDED, avg(VALUE) as VALUE from
 			(
-				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d %H:%i') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d %H:%i') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd' 
 			) as foo
 			group by dt order by dt
 		";
@@ -77,7 +92,8 @@ switch ($aggregationType)
 		$sql = "
 			select dt as ADDED, avg(VALUE) as VALUE from
 			(
-				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d %H') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d %H') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd' 
 			) as foo
 			group by dt order by dt
 		";
@@ -88,7 +104,8 @@ switch ($aggregationType)
 		$sql = "
 			select dt as ADDED, avg(VALUE) as VALUE from
 			(
-				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd' 
 			) as foo
 			group by dt order by dt
 		";
@@ -102,6 +119,7 @@ switch ($aggregationType)
 			select dt as ADDED, avg(VALUE) as VALUE from
 			(
 				SELECT DATE_FORMAT(ADDED, '%Y-%m') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd'
 			) as foo
 			group by dt order by dt
 		";
@@ -113,6 +131,7 @@ switch ($aggregationType)
 			select dt as ADDED, avg(VALUE) as VALUE from
 			(
 				SELECT DATE_FORMAT(ADDED, '%Y') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd'
 			) as foo
 			group by dt order by dt
 		";
@@ -126,7 +145,7 @@ switch ($aggregationType)
 
 
 $ph=SQLSelect($sql);
-var_dump($ph);
+//var_dump($ph);
 
 //$ph=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID = {$pvalue['ID']} order by ADDED");
 //var_dump($ph);
@@ -142,7 +161,7 @@ foreach ($ph as $value)
 	$xArray[] = $value['ADDED'];
 	$yArray[] = (float)$value['VALUE'];
 }
-var_dump($yArray);
+//var_dump($yArray);
 
 /********************************************************************/
 
@@ -206,7 +225,7 @@ $sql = '';
 switch ($aggregationType) 
 {
 	case 0:
-		$sql = "SELECT ADDED, VALUE, count(*) as cnt FROM phistory WHERE VALUE_ID = {$pvalue['ID']} group by ADDED, VALUE order by ADDED, VALUE";
+		$sql = "SELECT ADDED, VALUE, count(*) as cnt FROM phistory WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd' group by ADDED, VALUE order by ADDED, VALUE";
 		# code...
 		break;
 	
@@ -215,6 +234,7 @@ switch ($aggregationType)
 			select dt as ADDED, VALUE, count(*) as cnt from
 			(
 				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d %H:%i') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd'
 			) as foo
 			group by dt, value order by dt, VALUE
 		";
@@ -226,6 +246,7 @@ switch ($aggregationType)
 			select dt as ADDED, VALUE, count(*) as cnt from
 			(
 				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d %H') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd'
 			) as foo
 			group by dt, value order by dt, VALUE
 		";
@@ -237,6 +258,7 @@ switch ($aggregationType)
 			select dt as ADDED, VALUE, count(*) as cnt from
 			(
 				SELECT DATE_FORMAT(ADDED, '%Y-%m-%d') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd'
 			) as foo
 			group by dt, value order by dt, VALUE
 		";
@@ -250,6 +272,7 @@ switch ($aggregationType)
 			select dt as ADDED, VALUE, count(*) as cnt from
 			(
 				SELECT DATE_FORMAT(ADDED, '%Y-%m') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd'
 			) as foo
 			group by dt, value order by dt, VALUE
 		";
@@ -261,6 +284,7 @@ switch ($aggregationType)
 			select dt as ADDED, VALUE, count(*) as cnt from
 			(
 				SELECT DATE_FORMAT(ADDED, '%Y') as dt, ID, VALUE, ADDED, VALUE_ID FROM phistory 
+				WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd'
 			) as foo
 			group by dt, value order by dt, VALUE
 		";
@@ -274,7 +298,7 @@ switch ($aggregationType)
 
 
 $ph=SQLSelect($sql);
-var_dump($ph);
+//var_dump($ph);
 
 //$ph=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID = {$pvalue['ID']} order by ADDED");
 //var_dump($ph);
@@ -303,10 +327,10 @@ foreach ($xValues as $val)
 	}
 }
 
-var_dump($xCategories);
-var_dump($xValues);
-var_dump($res);
-var_dump($tt);
+//var_dump($xCategories);
+//var_dump($xValues);
+//var_dump($res);
+//var_dump($tt);
 
 /********************************************************************/
 
@@ -376,7 +400,7 @@ $sql = "
 
 
 $ph=SQLSelect($sql);
-var_dump($ph);
+//var_dump($ph);
 
 //$ph=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID = {$pvalue['ID']} order by ADDED");
 //var_dump($ph);
@@ -458,17 +482,17 @@ $chart->series[] = array(
 if ($graphType == 4)
 {
 
-$sql = '
+$sql = "
 	select VALUE, cnt, cnt / (select count(*) from phistory) * 100 as percent from
 	(
-		SELECT VALUE, count(*) as cnt FROM phistory group by VALUE
+		SELECT VALUE, count(*) as cnt FROM phistory WHERE VALUE_ID = {$pvalue['ID']} and ADDED >= '$dateStart' and ADDED < '$dateEnd' group by VALUE
 	) as foo
-';
+";
 
 
 
 $ph=SQLSelect($sql);
-var_dump($ph);
+//var_dump($ph);
 
 //$ph=SQLSelect("SELECT * FROM phistory WHERE VALUE_ID = {$pvalue['ID']} order by ADDED");
 //var_dump($ph);
