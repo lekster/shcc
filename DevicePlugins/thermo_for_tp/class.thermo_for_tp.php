@@ -43,7 +43,15 @@ class DevicePlugin_thermo_for_tp extends AbstractDevicePlugin
              case 'IP':
                 $result = $a->GetIP();
                // var_dump($result);
+                break;
+            case 'MaxReleWorkTimeCount':
+                $result = $a->GetMaxReleWorkTimeCount();
+               // var_dump($result);
                 break;    
+            case 'TempGisteresis':
+                $result = $a->GetTempGisteresis();
+               // var_dump($result);
+                break;        
             default:
                 $result = 'N/A';
                 break;
@@ -74,7 +82,14 @@ class DevicePlugin_thermo_for_tp extends AbstractDevicePlugin
                 $result = $a->SetIP($val);
                // var_dump($result);
                 break;
-            
+            case 'MaxReleWorkTimeCount':
+                $result = $a->SetMaxReleWorkTimeCount($val);
+               // var_dump($result);
+                break;    
+            case 'TempGisteresis':
+                $result = $a->SetTempGisteresis($val);
+               // var_dump($result);
+                break;    
             default:
                 $result = null;
                 break;
@@ -85,7 +100,8 @@ class DevicePlugin_thermo_for_tp extends AbstractDevicePlugin
     }
     public function GetPorts() 
     {
-        return array("NeedTemp"=>'port', "RealTemp"=>'port', "RealAirTemp"=>'port', "WorkState"=>'port', "IP"=>'port');
+        return array("NeedTemp"=>'port', "RealTemp"=>'port', "RealAirTemp"=>'port', "WorkState"=>'port', "IP"=>'port', 
+            'MaxReleWorkTimeCount' => 'port', 'TempGisteresis'=>'port');
     }
 
     public function GetPortOptions($port) {}

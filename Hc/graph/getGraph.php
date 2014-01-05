@@ -425,13 +425,13 @@ for ($i = 0; $i < count($ph); $i++)
 $periodSec = strtotime($dateEnd) - strtotime($dateStart);
 
 $divider = array(1,60, 3600, 86400, 86400*30, 86400 * 365);
-
+/*
 var_dump($res);
 foreach ($res as $k =>$v)
 {
 	echo $k . "|" . (float)$v / $divider[$aggregationType]. "|||" .(float)$v / $periodSec * 100  . "<br>" .  PHP_EOL;
 }
-
+*/
 //die('asd');
 
 

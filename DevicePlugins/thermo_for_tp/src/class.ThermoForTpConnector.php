@@ -186,7 +186,7 @@ class ThermoForTpConnector
         ///var_dump($matches);die('asd');
         $ip = array($matches[1], $matches[2], $matches[3], $matches[4]);
         $ret = $this->SendCommand($cmd, $ip);
-        $ret = "c0a8011f";
+        //$ret = "c0a8011f";
         //var_dump($ret);
         if (!preg_match('/([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/i', $ret, $matches))
             return null;
@@ -217,15 +217,64 @@ class ThermoForTpConnector
         if (!preg_match('/([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/i', $val, $matches))
             return null;
         ///var_dump($matches);die('asd');
-        $ip = array($matches[1], $matches[2], $matches[3], $matches[4], $matches[5], $matches[6]);
-        $ret = $this->SendCommand($cmd, $ip);
-        $ret = "c0a8011fa1b1";
+        $mac = array($matches[1], $matches[2], $matches[3], $matches[4], $matches[5], $matches[6]);
+        $ret = $this->SendCommand($cmd, $mac);
+        //$ret = "c0a8011fa1b1";
         if (!preg_match('/([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/i', $ret, $matches))
             return null;
         //var_dump($ret);        
         return $ret;
     }
+
+    public function GetMaxReleWorkTimeCount()
+    {
+        $cmd = 0x12;
+        $ret = $this->SendCommand($cmd, array());
+        if (!preg_match('/([a-f0-9]{2})([a-f0-9]{2})/i', $ret, $matches))
+            return null;
+        $ret = base_convert($matches[1], 16,10) * 256 + base_convert($matches[2], 16,10);
+        return $ret;
+
+    }
     
+    public function SetMaxReleWorkTimeCount($val)
+    {
+        if (!is_numeric($val) || $val >= 65535 || $val < 0)
+            return null;
+        $cmd = 0x13;
+        
+        $ret = $this->SendCommand($cmd, array((int)($val / 256), $val % 256));
+        return $ret;
+
+    }
+
+    public function GetTempGisteresis()
+    {
+        $cmd = 0x10;
+        $ret = $this->SendCommand($cmd, array());
+        if (!is_null($ret))
+        {
+            $ret = base_convert($ret, 16,10);
+        }
+        return $ret;
+
+    }
+    
+    public function SetTempGisteresis($val)
+    {
+        $cmd = 0x11;
+        if (!is_numeric($val) || $val >= 255 || $val < 0)
+            return null;
+        $ret = $this->SendCommand($cmd, array($val));
+        if (!is_null($ret))
+        {
+            $ret = base_convert($ret, 16,10);
+        }
+        return $ret;
+    }
+
+
+
 }
 //$a = new ThermoForTpConnector();
 //$a->GetNeedTemp();
