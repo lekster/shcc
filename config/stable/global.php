@@ -47,6 +47,16 @@ return array(
             'TextsDir' => '/home/projects/data/majordomo/texts/',
             'SoundsDir' => '/home/projects/data/majordomo/sounds/',
 
+            'BaseDataDir' => '/home/projects/data/majordomo/',
+            'DataDir' => array
+            (
+                'BackupDir' => 'backup/',
+                'CacheDir' => 'cache/',
+                'CmsDir' => 'cms/',
+                'TextsDir' => 'texts/',
+                'SoundsDir' => 'sounds/',      
+            ),
+
       ),
 
 	  'IOC' => array(

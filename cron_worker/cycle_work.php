@@ -30,6 +30,7 @@ class CycleWork extends \Worker\CronWorker
    protected $requestEm;
 
    protected $configsArr = array();
+   protected $threads = null;
 
 
    public function initDBAL($params = null)
@@ -48,7 +49,45 @@ class CycleWork extends \Worker\CronWorker
    public function customBeforeDoWork($params)
    {
       $this->initDBAL();
+      $this->initThreads();
+   }
 
+
+   public function initThreads()
+   {
+
+      include_once("./lib/threads.php");
+
+      set_time_limit(0);
+
+      $connected = 0;
+      while(!$connected) 
+      {
+         $connected = @mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+         sleep(5);
+      }
+
+      // connecting to database
+      $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
+       
+      echo "CONNECTED TO DB\n";
+
+      include_once(DIR_MODULES."control_modules/control_modules.class.php");
+
+      $ctl = new control_modules();
+      
+      
+      $this->runStartUpScripts();
+      // 1 second sleep
+      sleep(1); 
+
+      // getting list of /scripts/cycle_*.php files to run each in separate thread
+      
+      $cycles = $this->getCycleScripttFilePath();
+      //var_dump($cycles);
+
+      $this->threads = $this->startCycleThreads($cycles);
+      echo "ALL CYCLES STARTED\n"; 
    }
 
    protected function createBackup()
@@ -211,56 +250,27 @@ class CycleWork extends \Worker\CronWorker
    }
 
 
+   public function customAfterDoWork($params)   
+   {
+      // closing database connection
+      //$db->Disconnect(); 
+      $this->stopWork();
+   }
+
    public function work($params)
    {
-      include_once("./lib/threads.php");
-
-      set_time_limit(0);
-
-      $connected = 0;
-      while(!$connected) 
-      {
-         $connected = @mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-         sleep(5);
+      $result = $this->threads->iteration();
+      if (!empty($result))  
+      {  
+         $this->logger->debug("RESULT", $result);
+         echo $result."\r\n";
       }
-
-      // connecting to database
-      $db = new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); 
-       
-      echo "CONNECTED TO DB\n";
-
-      include_once(DIR_MODULES."control_modules/control_modules.class.php");
-
-      $ctl = new control_modules();
       
-      
-      $this->runStartUpScripts();
-      // 1 second sleep
-      sleep(1); 
-
-      // getting list of /scripts/cycle_*.php files to run each in separate thread
-      
-      $cycles = $this->getCycleScripttFilePath();
-      //var_dump($cycles);
-
-      $threads = $this->startCycleThreads($cycles);
-      
-
-      echo "ALL CYCLES STARTED\n";
-
-      while (false !== ($result = $threads->iteration())) 
+      if ($result === false)
       {
-         if (!empty($result))  
-         {  
-            $this->logger->debug("RESULT", $result);
-            echo $result."\r\n";
-         }
+         $this->logger->debug("RESULT === FALSE--EXIT!!!");
+         return -1;
       }
-
-      // closing database connection
-      $db->Disconnect(); 
-      $this->stopWork();
-
    }
 }
 

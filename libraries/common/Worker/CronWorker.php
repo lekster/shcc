@@ -63,9 +63,10 @@ abstract class CronWorker
 			$this->customBeforeDoWork($params);
 			$this->checkRunConditions($params);
 
-			while (!$this->cronLock->isNeedToStopOrRestart() && !$this->isSigTerm)
+			$ret = 0;
+			while (!$this->cronLock->isNeedToStopOrRestart() && !$this->isSigTerm && $ret != -1)
 			{
-				$this->work($params);
+				$ret = $this->work($params);
 				$this->cronLock->heartbeat();
 				//$this->logger->debug('run - ' . var_export($argv, 1));
 				//sleep(1);

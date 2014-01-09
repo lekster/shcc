@@ -54,6 +54,7 @@ class Majordomo_Facade
    {
       $this->config = new \Immo_MobileCommerce_Config($configFilePath);
       $this->logger = $this->config->getIOCObject('Logger');
+      $this->setUpDataDir();
       $this->initDBAL();
       $this->configurate();
       $this->autoload(); 
@@ -82,6 +83,60 @@ class Majordomo_Facade
       //$this->configEm->getConnection()->getWrappedConnection()->setAttribute(\PDO::ATTR_TIMEOUT, 4);
       //$this->requestEm->getConnection()->getWrappedConnection()->setAttribute(\PDO::ATTR_TIMEOUT, 4);
    }
+
+   protected function setUpDataDir()
+   {
+      $baseDir = $this->config->get('BaseDataDir', 'Global');
+      if (!isset($baseDir))
+      {
+        var_dump("BaseDir not set!!");
+        die();
+      }
+      if (!is_dir($baseDir))
+      {
+        $res = @mkdir($baseDir);
+        if (!$res)
+        {
+          var_dump("Cannot create baseDir $baseDir");
+          die();
+        }
+
+        $res = 0;
+        $str = system("chmod 777 $baseDir -R", &$res);
+        if ($res !== 0)
+        {
+            var_dump("Cannot chmod $baseDir");exit();
+        }
+
+      }
+
+      $dataDir = $this->config->get('DataDir', 'Global');
+      foreach ($dataDir as $key =>$val)
+      {
+        $dir = str_replace("//", "/", $baseDir . "/" . $val);
+        
+        if (!is_dir($dir))
+        {
+          $res = @mkdir($dir);
+          if (!$res)
+          {
+            var_dump("Cannot create Dir $dir");
+            die();
+          }
+
+          $res = 0;
+          $str = system("chmod 777 $dir -R", &$res);
+          if ($res !== 0)
+          {
+              var_dump("Cannot chmod $dir");exit();
+          }  
+
+        }
+      }
+   }
+
+   
+
 
    //get from config.php
    protected function configurate()
@@ -228,9 +283,12 @@ class Majordomo_Facade
         $ret = $obj->setProperty($propertyName, $propertyVal, !$isNeedToUpdateLinked);
         if (is_numeric($propertyVal))
         {
-          //$a = new PBR_Analytics_Statsd_Sender('192.168.1.120', '8125');
-          $a = $this->config->getIOCObject('AnalyticsStatsdSender');
-          $a->gauge("{$objectName}.{$propertyName}", $propertyVal);
+          if (is_string(SETTINGS_GRAPHITE_HOST))
+          {  
+            $graphiteSender = new PBR_Analytics_Statsd_Sender(SETTINGS_GRAPHITE_HOST, '8125');
+            //$a = $this->config->getIOCObject('AnalyticsStatsdSender');
+            $graphiteSender->gauge("{$objectName}.{$propertyName}", $propertyVal);
+          }
         }
         return $ret;    
       } 
