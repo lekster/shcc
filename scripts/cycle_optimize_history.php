@@ -19,7 +19,7 @@ function DeleteOldValues()
       join phistory ph
       where p.ID = pv.PROPERTY_ID and p.OBJECT_ID=pv.OBJECT_ID
       and ph.VALUE_ID=pv.ID
-      #and UNIX_TIMESTAMP(ph.ADDED) <= UNIX_TIMESTAMP() - KEEP_HISTORY*86400");
+      and UNIX_TIMESTAMP(ph.ADDED) <= UNIX_TIMESTAMP() - KEEP_HISTORY*86400");
 
       foreach ($objects as $val)
       {
@@ -56,7 +56,7 @@ while(1)
    echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
    DeleteOldValues();
-   sleep(1);
+   sleep(3600);
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
