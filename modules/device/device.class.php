@@ -407,9 +407,9 @@ function fetchPropertiesFromPlugin($deviceId)
             $oldPropertyVal=@$prec['value'];
             $value = $ret->GetPortVal($device['raw_id'], $prec['sysname']);
             //var_dump($prec);
-            if (!is_null($value) && $oldPropertyVal!=$value) 
+            if (!is_null($value)) 
             {
-               $changed = true;
+               if ($oldPropertyVal!=$value) $changed = true;
                //$changed_values[$prec['sysname']]=array('old_value'=>$oldPropertyVal, 'value'=>$prec['value']);
                $prec['value']=$value;
                $prec['updated']=date('Y-m-d H:i:s');
