@@ -82,9 +82,20 @@ class DevicePlugin_plugin_example extends AbstractDevicePlugin
 
     public function GetPortOptions($port) {}
 
+    function ping($host, $timeout = 1) 
+    {
+        $result = false;
+        $res = exec ("ping $host -c3", &$out, &$ret);
+        /*var_dump($res);
+        var_dump($out);
+        var_dump($ret);
+        */
+        return !$ret;
+    }
+
     public function IsAlive($device)
     {
-        return false;
+        return $this->ping($device);
     }
 
 

@@ -386,22 +386,37 @@ function fetchPropertiesFromPlugin($deviceId)
    
     $propertiesArr = SQLSelect("SELECT * FROM device_properties WHERE device_id='".$device['device_id']. "'");
 
+    //если девайс упал или восстановился - это тоже изменение сосотояния, вопрос как передавать в скрипт changed инфо о том что именно поменялось
+
     $changed = false;
+    $changed_values = array();
     if (isset($device) && isset($plugin) && is_object($ret))
     {
-        if ($ret->isAlive($device['raw_id']) !== FALSE)
+        $isAlive = $ret->isAlive($device['raw_id']);
+        if ($isAlive == FALSE)
         {
-            $device['status'] = 1;
+            if ($device['status'] == 1)  
+            {
+              $changed = true;
+              $changed_values['isAlive']=array('old_value'=>1, 'value'=>0);
+            }
+            $device['status'] = 0;
+            SQLUpdate('devices', $device, 'device_id');
         } 
         else
         {
-            $device['status'] = 0;
-        } 
-        SQLUpdate('devices', $device, 'device_id');
-        //а тут обновляем все св-ва
-         $totalp=count($propertiesArr);
-         for($ip=0;$ip<$totalp;$ip++) 
-         {
+          if ($device['status'] == 0)  
+          {
+            $changed = true;
+            $changed_values['isAlive']=array('old_value'=>0, 'value'=>1);
+          }  
+
+          $device['status'] = 1;
+          SQLUpdate('devices', $device, 'device_id');
+          //а тут обновляем все св-ва
+          $totalp=count($propertiesArr);
+          for($ip=0;$ip<$totalp;$ip++) 
+          {
             $prec= $propertiesArr[$ip];
             
             $oldPropertyVal=@$prec['value'];
@@ -409,8 +424,11 @@ function fetchPropertiesFromPlugin($deviceId)
             //var_dump($prec);
             if (!is_null($value)) 
             {
-               if ($oldPropertyVal!=$value) $changed = true;
-               //$changed_values[$prec['sysname']]=array('old_value'=>$oldPropertyVal, 'value'=>$prec['value']);
+               if ($oldPropertyVal!=$value) 
+               {
+                  $changed = true;
+                  $changed_values[$prec['sysname']]=array('old_value'=>$oldPropertyVal, 'value'=>$value);
+               }
                $prec['value']=$value;
                $prec['updated']=date('Y-m-d H:i:s');
                SQLUpdate('device_properties', $prec, 'property_id');
@@ -424,26 +442,24 @@ function fetchPropertiesFromPlugin($deviceId)
                }
             }
             
-         }
+          }
+       }
 
-         //$changed = true;
-         if ($changed) 
-         {
-            //$params=$changed_values;
-            $params['device']=$device;
-            if (@$device['script_id']) 
-            {
 
-              runScript($device['script_id'], $params);
-            } elseif (@$device['code']) {
-              eval($device['code']);
-            }
-         }
+      //$changed = true;
+      if ($changed) 
+      {
+        //$params=$changed_values;
+        $params['device']=$device;
+        if (@$device['script_id']) 
+        {
+
+          runScript($device['script_id'], $params);
+        } elseif (@$device['code']) {
+          eval($device['code']);
+        }
+      }
     }
-
-
-    
-
  }
 
 /**
