@@ -1,0 +1,200 @@
+<!--#
+ @version 0.2 (auto-set)
+#-->
+
+<!-- Table 'pinghosts' edit -->
+<p align=center>
+ <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+</p>
+<table border=0 align=center cellpadding=3>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit">
+[#if OK#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="green"><#LANG_DATA_SAVED#></font>
+ </td>
+</tr>
+[#endif OK#]
+[#if ERR#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red"><#LANG_FILLOUT_REQURED#></font>
+ </td>
+</tr>
+[#endif ERR#]
+[#if ERR_PropertyValue#]
+<tr>
+ <td colspan=2 align=center>
+  <font color="red">Incorrect property value</font>
+ </td>
+</tr>
+[#endif ERR_PropertyValue#]
+[#if ID=""#]
+<tr>
+ <td colspan=2 align=center><b><#LANG_NEW_RECORD#></b></td>
+</tr>
+[#endif ID#]
+
+<tr>
+ <td align=right>
+ [#if ERR_TITLE#]<b><font color="red">[#endif#]
+ <#LANG_TITLE#>:
+ </td>
+ <td>
+  <input type="text" name="job_title" value="[#name#]" size="10"  width="199" height="133" />
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ [#if ERR_Crontab#]<b><font color="red">[#endif#]
+ Crontab:
+ </td>
+ <td>
+  <input type="text" name="crontab" value="[#crontab#]" size="10"  width="199" height="133" />
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ Is_active:
+ </td>
+ <td>
+  <b><input type="checkbox" name="is_active_cb" value="1"[#if is_active="1"#] checked[#endif#]></b>
+ </td>
+</tr>
+
+<tr>
+ <td align=right>
+ Is_periodical:
+ </td>
+ <td>
+  <b><input type="checkbox" name="is_periodical_cb" value="1"[#if is_periodical="1"#] checked[#endif#]></b>
+ </td>
+</tr>
+
+[#if PROPERTIES#]
+
+<script language="javascript">
+ function setProperty(action_id, current_value, action_type_id) {
+  var new_value=prompt("Please enter new value", current_value);
+  if (new_value!=null) {
+   var url="?id=<#scheduled_job_id#>&edit_mode=<#EDIT_MODE#>&view_mode=<#VIEW_MODE#>&mode=setvalue_action";
+   window.location=url+'&scheduled_job_action_id='+action_id+"&new_value="+new_value+'&scheduled_job_type_id='+action_type_id;
+  }
+  return false;
+ }
+
+ function getInfo(id) 
+ {
+   //alert(id);
+   //var url="?id=<#scheduled_job_id#>&edit_mode=<#EDIT_MODE#>&view_mode=<#VIEW_MODE#>&mode=setvalue";
+   //window.location=url+'&prop_id='+prop_id+"&new_value="+new_value;
+    jQuery.get('?pd=<#PD#>&id=<#scheduled_job_id#>&edit_mode=<#EDIT_MODE#>&view_mode=<#VIEW_MODE#>&mode=getInfo&scheduled_job_type_id='+id, {},
+                function(data) {
+                   alert(data);
+                   //http://pbr-serv-rv-cron.asmirnov.fenrir.immo/admin.php?pd=c2hlZHVsZWRfam9iOntpbnN0YW5jZT1hZG19pz_cGFuZWw6e2FjdGlvbj1zaGVkdWxlZF9qb2J9pz_&md=scheduled_job&inst=adm&view_mode=edit_scheduled_job&id=3
+                }
+            );
+  return false;
+ }
+
+ function AddAction(job_id) 
+ {
+   var selectBox = document.getElementById("scheduled_job_action_types");
+   var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+   //alert("job-" + job_id+'||'+"act-" + selectedValue);
+   //alert(id);
+  var new_value=prompt("Please enter new value");
+  if (new_value!=null) 
+  {
+    var url="?id=<#scheduled_job_id#>&edit_mode=<#EDIT_MODE#>&view_mode=<#VIEW_MODE#>&mode=add_action";
+    window.location=url+'&scheduled_job_id='+job_id+"&action_type_id="+selectedValue+"&value="+new_value;
+  }
+  //http://pbr-serv-rv-cron.asmirnov.fenrir.immo/admin.php?pd=cGFuZWw6e2FjdGlvbj1zaGVkdWxlZF9qb2J9pz_&md=scheduled_job&inst=adm&id=2&edit_mode=&view_mode=edit_scheduled_job&mode=add_action&scheduled_job_id=2&action_type_id=2&value=123
+  return false;
+ }
+
+ function deleteAction(action_id)
+ {
+    if (confirm('Are you sure to delete action?'))
+    {
+       var url="?id=<#scheduled_job_id#>&edit_mode=<#EDIT_MODE#>&view_mode=<#VIEW_MODE#>&mode=delete_action";
+       window.location=url+'&scheduled_job_action_id='+action_id;
+    } else
+    {
+       return false;
+    }
+
+  
+ }
+
+</script>
+ 
+<tr>
+ <td valign="top" align="right"><b><#LANG_PROPERTIES#>:</b></td>
+ <td valign="top">
+  <table width="100%" border="1" cellpadding="2">
+   <tr>
+    <td valign="top"><b>typeName</b></td>
+    <td valign="top" width='300px'><b>params</b></td>
+    <td valign="top"><b>Set</b></td>
+    <td valign="top"><b>GetInfo</b></td>
+    <td valign="top"><b>Delete</b></td>
+   </tr>
+   [#begin PROPERTIES#]
+   <tr>
+    <td valign="top">[#typeName#]</td>
+    <td valign="top">[#params#]</td>
+    <td valign="top"><a href="#" onClick="return setProperty('[#scheduled_job_action_id#]', '[#params#]', '[#type_id#]')"><#LANG_SET#></a></td>
+    <td valign="top"><a href="#" onClick="return getInfo('[#type_id#]')">Get info</a></td>
+    <td valign="top"><a href="#" onClick="return deleteAction('[#scheduled_job_action_id#]')">Delete</a></td>
+   </tr>
+   [#end PROPERTIES#]
+   <tr>
+    <td valign="top"><b>Добавить</b></td>
+    <td valign="top" width='300px'>
+      <select id="scheduled_job_action_types" width='300px'>
+        <option value="0" >
+        [#begin SCHEDULED_JOB_ACTIONS#]
+            <option value="[#ID#]">[#TITLE#]
+        [#end SCHEDULED_JOB_ACTIONS#]
+       </select>
+
+    </td>
+    <td valign="top"><a href="#" onClick="return AddAction('[#scheduled_job_id#]')">Add</a></td>
+    <td valign="top"></td>
+   </tr>
+
+
+  </table>
+ </td>
+</tr>
+[#endif PROPERTIES#]
+
+<tr>
+ <td valign="top">&nbsp;</td>
+ <td>
+ [#if ID!=""#]
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>">
+ [#else ID#]
+ <input type="submit" name="subm" value="<#LANG_ADD#>">
+ [#endif ID#]
+ &nbsp;
+ <a href="?"><#LANG_CANCEL#></a>
+ </td>
+</tr>
+<input type="hidden" name="id" value="<#scheduled_job_id#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+</form>
+
+
+
+
+<tr>
+ <td valign="top" colspan="2"><hr></td>
+</tr>
+
+</table>

@@ -1,0 +1,26 @@
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+<!--#
+ @version 0.1 (auto-set)
+#-->
+
+ <!-- action usual -->
+ <!-- table device search -->
+ [#if VIEW_MODE="search_scheduled_job" || VIEW_MODE=""#]
+  [#inc scheduled_job_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table device search -->
+ <!-- table device edit -->
+ [#if VIEW_MODE="edit_scheduled_job"#]
+   [#inc scheduled_job_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table device edit -->
+ <!-- table device edit -->
+ <!-- / table device edit -->
+ <!-- table device view --> 
+ [#if VIEW_MODE="view_scheduled_job"#]
+   [#inc scheduled_job_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table device view -->

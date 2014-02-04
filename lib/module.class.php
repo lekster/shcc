@@ -544,7 +544,7 @@ public $mobile;
 
   $session->save();
   $db->Disconnect();
-  if (!headers_sent()) {
+  if (!headers_sent($filename, $linenum)) {
    header("Location: $url\n\n");
   } else {
    print "Headers already sent in $filename on line $linenum<br>\n" ."Cannot redirect instead\n";
