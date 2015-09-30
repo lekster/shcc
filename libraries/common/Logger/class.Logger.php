@@ -1,8 +1,8 @@
 <?php
 
-require_once 'libraries/common/Logger/interface.Loggable.php';
-require_once 'libraries/common/Logger/Graylog/GELFMessage.php';
-require_once 'libraries/common/Logger/Graylog/GELFMessagePublisher.php';
+require_once 'pbr-lib-common/src/Logger/interface.Loggable.php';
+require_once 'pbr-lib-common/src/Logger/Graylog/GELFMessage.php';
+require_once 'pbr-lib-common/src/Logger/Graylog/GELFMessagePublisher.php';
 
 /**
  * Имплементация механизма логирования
@@ -17,6 +17,7 @@ class Immo_MobileCommerce_Logger implements Immo_MobileCommerce_Loggable
 
     const DEFAULT_FORMAT = '%d %t [%p] %F:%L %C::%M >>> %m %O';
     const DEFAULT_FILENAME = '/var/log/sender/common.log';
+    const ENABLE_DEBUG_FLAG = '/home/projects/data/enable_debug.log';
 
     private $logEventsListeners = array();
 
@@ -58,7 +59,7 @@ class Immo_MobileCommerce_Logger implements Immo_MobileCommerce_Loggable
 
     private $realFileName = null;
 
-    private $graylogHost = 'vps8242.mtu.immo';
+    private $graylogHost = 'vps6045.mtu.immo';
     private $hostName = '';
     private $hostNameForGraylog = '';
     private $graylogPublisher;
@@ -71,8 +72,8 @@ class Immo_MobileCommerce_Logger implements Immo_MobileCommerce_Loggable
         if ($tracedepth) $this->setTraceDepth($tracedepth);
         $this->hostName = trim(`hostname`);
         $this->hostNameForGraylog = str_replace(".", "_", $this->hostName);
-        //if (!is_null($graylogHost)) $this->graylogHost = $graylogHost;
-        //$this->graylogPublisher = new GELFMessagePublisher($this->graylogHost);
+        if (!is_null($graylogHost)) $this->graylogHost = $graylogHost;
+        $this->graylogPublisher = new GELFMessagePublisher($this->graylogHost);
     }
 
 
@@ -287,7 +288,7 @@ class Immo_MobileCommerce_Logger implements Immo_MobileCommerce_Loggable
             throw new Immo_Exceptions_WrongValueException($level, array_keys($this->Strings));
         }
 
-        if ( $level >= $this->Level )
+        if ( $level >= $this->Level || file_exists(self::ENABLE_DEBUG_FLAG))
         {
             $fullTrace = debug_backtrace();
             $trace = $fullTrace[$this->TraceDepth - 1];
@@ -304,7 +305,9 @@ class Immo_MobileCommerce_Logger implements Immo_MobileCommerce_Loggable
             );
 
             //send to graylog
-            if (!in_array($this->hostName, $this->graylogBlackListHosts))
+            if (!in_array($this->hostName, $this->graylogBlackListHosts)
+                && ($level > self::Debug)
+            )
             { 
                 $runScriptName = (isset($_SERVER['SCRIPT_FILENAME'])) ? basename($_SERVER['SCRIPT_FILENAME']) : 'unknown';
                 //$runScriptName = (isset($_SERVER["argv"][0])) ? basename($_SERVER["argv"][0]) : 'unknown';        
@@ -319,8 +322,11 @@ class Immo_MobileCommerce_Logger implements Immo_MobileCommerce_Loggable
                 $glm->setFile($data['trace']['file']);
                 $glm->setLine($data['trace']['line']);
                 $glm->setTimestamp(microtime(1));
-                if (!is_null($facility)) $glm->setFacility($facility); else $glm->setFacility(substr(strrchr(GIRAR_BASE_DIR, "/"), 1));
-                //$this->graylogPublisher->publish($glm);
+                $projectName = substr(strrchr(GIRAR_BASE_DIR, "/"), 1);
+                $versionDelimiterPos = strrpos($projectName, "-");
+                $projectBaseName = substr($projectName, 0, ($versionDelimiterPos !== false) ? $versionDelimiterPos : strlen($projectName));
+                if (!is_null($facility)) $glm->setFacility($facility); else $glm->setFacility($projectBaseName);
+                $this->graylogPublisher->publish($glm);
             }
             //write to log file
             $fp = @fopen( $this->Filename, "a" );
@@ -330,7 +336,7 @@ class Immo_MobileCommerce_Logger implements Immo_MobileCommerce_Loggable
                 @fwrite( $fp, $text."\n" );
                 @fclose( $fp );
             } else {
-                //mail('asmirnov@immo.ru', 'mobile-commerce: class.Logger.php', 'Failed to open log: '.$this->Filename);
+                mail('pbrdevel@immo.ru', 'mobile-commerce: class.Logger.php', 'Failed to open log: '.$this->Filename);
             }
         }
     }

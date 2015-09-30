@@ -19,10 +19,12 @@ class Immo_MQ_Message
 	protected $MQMessageId = null;
 	protected $MQTransactionId = null;
 	protected $DeliveryInfo = null;
+	protected $Version;
 
 	protected $headers = array();
 
 	protected $params = array();
+	protected $info;
 
 
 	public function __construct($xml = null)
@@ -35,6 +37,16 @@ class Immo_MQ_Message
 	public function getCorrelationID()
 	{
 		return $this->CorrelationID;
+	}
+	
+	public function getInfo()
+	{
+		return $this->info;
+	}
+
+	public function getVersion()
+	{
+		return $this->Version;
 	}
 
 	public function getTypeID()
@@ -215,14 +227,25 @@ class Immo_MQ_Message
 
 		return $this;
 	}
+	
+	public function setVersion($value)
+	{
+		$this->Version = $value;
+		return $this;
+	}
 
+	public function setInfo($value)
+	{
+		$this->info = $value;
+		return $this;
+	}
 
 	////////////////////////////////////////////////////////LOGIC////////////////////////////////////////////////////////
 	public function parseXmlMessage($xml)
 	{
 		$xml_node = new SimpleXMLElement($xml);
 
-		$fields = array('CorrelationID', 'TypeID', 'FormatIndicator', 'ReturnAddress', 'ExpirationDate', 'SequenceTotalCount', 'SequencePosition', 'AdditionalHeaders', 'MQMessageData');
+		$fields = array('CorrelationID', 'TypeID', 'FormatIndicator', 'Version', 'ReturnAddress', 'ExpirationDate', 'SequenceTotalCount', 'SequencePosition', 'AdditionalHeaders', 'MQMessageData');
 
 		foreach ($fields as $f)
 			$this->{$f} = $this->xmlValue($xml_node, $f);
@@ -238,6 +261,7 @@ class Immo_MQ_Message
 		if ($this->CorrelationID) $xml->addChild('CorrelationID', $this->CorrelationID);
 		if ($this->TypeID) $xml->addChild('TypeID', $this->TypeID);
 		if ($this->FormatIndicator) $xml->addChild('FormatIndicator', $this->FormatIndicator);
+		if ($this->Version) $xml->addChild('Version', $this->Version);
 		if ($this->ReturnAddress) $xml->addChild('ReturnAddress', $this->ReturnAddress);
 		if ($this->ExpirationDate) $xml->addChild('ExpirationDate', $this->ExpirationDate);
 		if ($this->SequenceTotalCount) $xml->addChild('SequenceTotalCount', $this->SequenceTotalCount);

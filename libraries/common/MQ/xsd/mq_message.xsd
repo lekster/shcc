@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="MQMessage" type="MQMessage"/>
+  <xs:complexType name="MQMessage">
+      <xs:sequence minOccurs="1" maxOccurs="1">
+        <xs:element name="CorrelationID" type="xs:string" nillable="false"/>
+        <xs:element name="TypeID" type="xs:decimal" minOccurs="0"/>
+        <xs:element name="FormatIndicator" type="xs:string" minOccurs="0"/>
+        <xs:element name="Version" type="xs:decimal" minOccurs="0"/>
+        <xs:element name="ReturnAddress" type="xs:string" minOccurs="0"/>
+        <xs:element name="ExpirationDate" type="xs:string" minOccurs="0"/>
+        <xs:sequence minOccurs="0" maxOccurs="1">
+          <xs:element name="SequenceTotalCount" type="xs:decimal"/>
+          <xs:element name="SequencePosition" type="xs:decimal"/>
+        </xs:sequence>
+        <xs:element name="AdditionalHeaders" type="MQ_message_additional_headers" minOccurs="0"/>
+        <xs:element name="MQMessageData" type="xs:anyType"/>
+      </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="MQ_message_additional_headers">
+        <xs:sequence>
+          <xs:element name="MessageHistory" type="MQ_message_history_node"/>
+        </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="MQ_message_history_node">
+        <xs:sequence>
+          <xs:element name="Node" type="MQ_message_history_node_info" maxOccurs="unbounded"/>
+        </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="MQ_message_history_node_info">
+        <xs:sequence>
+          <xs:element name="Num" type="xs:string"/>
+        </xs:sequence>
+  </xs:complexType>
+  
+</xs:schema>
+
+
+
+
+
+
+
+
+
+
+

@@ -11,42 +11,42 @@ return array(
 
         'doctrineDatasourceSmsDb' => array(
             'driver' => 'pdo_pgsql',
-	    	'user' => 'inform',
-	    	'password'=>'l!j@cneg',
-	    	'host'=>'donar.immo',
-	    	'port'=> 5432,
-		   	'dbname'=>'pbr-serv-sms',
+            'user' => 'inform',
+            'password'=>'l!j@cneg',
+            'host'=>'donar.immo',
+            'port'=> 5432,
+            'dbname'=>'pbr-serv-sms',
         ),  
 
        
         'DoctrineDatasourceDb' => array(
             'driver'   => 'pdo_mysql',
-            'user'     => 'root',
-            'password' => 'root',
-            'dbname'   => 'majordomo_devel',
-            'host' => '192.168.1.120',
+            'user'     => 'worker',
+            'password' => 'worker',
+            'dbname'   => 'db_terminal',
+            'host' => '10.192.163.44',
         ),
 
 
         /*'doctrineDatasourceRequestDb' => array(
             'driver' => 'pdo_pgsql',
-	    	'user' => 'inform',
-	    	'password'=>'l!j@cneg',
-	    	'host'=>'donar.immo',
-	    	'port'=> 5432,
-		   	'dbname'=>'pbr-serv-sms-sender',
+            'user' => 'inform',
+            'password'=>'l!j@cneg',
+            'host'=>'donar.immo',
+            'port'=> 5432,
+            'dbname'=>'pbr-serv-sms-sender',
         ),*/    
     ),   
 
 
+
       'Global' => array
       (
-            'McBaseUrl' => 'http://vps7151.mtu.immo/mobile-commerce-rpc-partner-stable/htdocs/pbc.php?service=%login%&password=%password%&phone=%msisdn%&price=%sum%&forceGuid=%transaction_guid%&msg=%msg%',
-            'BackupDir' => '/tmp/1/',
-            'CacheDir' => '/tmp/majordomo/cache/',
-            'CmsDir' => '/tmp/majordomo/cms/',
-            'TextsDir' => '/tmp/majordomo/texts/',
-            'SoundsDir' => '/tmp/majordomo/sounds/',
+            'BackupDir' => '/home/asmirnov/temp/backup/',
+            'CacheDir' => '/home/asmirnov/temp/cache/',
+            'CmsDir' => '/home/asmirnov/temp/cms/',
+            'TextsDir' => '/home/asmirnov/temp/texts/',
+            'SoundsDir' => '/home/asmirnov/temp/sounds/',
 
             'BaseDataDir' => '/tmp/majordomo/',
             'DataDir' => array

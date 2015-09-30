@@ -16,7 +16,7 @@ class MultiRequest_Request {
 	protected $url;
 	protected $realUrl;
 	protected $curlHandle;
-	protected $headers = array('Expect:');
+	protected $headers = null;
 	protected $getData;
 	protected $postData;
 	protected $curlInfo;
@@ -28,8 +28,8 @@ class MultiRequest_Request {
 	protected $error;
 	protected $errorCode;
 	protected $curlOptions = array(
-		CURLOPT_TIMEOUT => 3600,
-		CURLOPT_CONNECTTIMEOUT => 200,
+		CURLOPT_TIMEOUT => 30,//3600,
+		CURLOPT_CONNECTTIMEOUT => 30,//200,
 		CURLOPT_FAILONERROR => true,
 		CURLOPT_FRESH_CONNECT => true,
 		CURLOPT_HEADER => true,
@@ -126,9 +126,16 @@ class MultiRequest_Request {
 		$curlOptions = $this->curlOptions;
 		$curlOptions[CURLINFO_HEADER_OUT] = true;
 
-		if($this->headers) {
+		if($this->headers)
+		{
 			$curlOptions[CURLOPT_HTTPHEADER] = $this->headers;
 		}
+		else
+		{
+			if (isset($curlOptions[CURLOPT_HTTPHEADER]))
+				$this->headers = $curlOptions[CURLOPT_HTTPHEADER];
+		}
+
 		if($this->postData) {
 			$postData = $this->postData;
 
@@ -138,7 +145,8 @@ class MultiRequest_Request {
 			}
 			$curlOptions[CURLOPT_POST] = true;
 			$curlOptions[CURLOPT_POSTFIELDS] = $postData;
-			$this->addHeader('Content-Type:	application/x-www-form-urlencoded; charset=' . $clientEncoding);
+			if(!$this->headers)
+				$this->addHeader('Content-Type:	application/x-www-form-urlencoded; charset=' . $clientEncoding);
 		}
 
 		curl_setopt_array($curlHandle, $curlOptions);

@@ -1,7 +1,5 @@
 <?php
 
-require_once ("libraries/common/PhpConf/Reader.php");
-
 class Immo_MobileCommerce_Config extends PhpConf_Reader
 {
     protected static $_instance;

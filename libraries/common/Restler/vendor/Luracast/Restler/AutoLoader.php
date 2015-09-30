@@ -69,14 +69,14 @@ class AutoLoader
         if (static::$perfectLoaders === spl_autoload_functions())
             return static::$instance;
 
-        /*if (false !== $loaders = spl_autoload_functions())
+        if (false !== $loaders = spl_autoload_functions())
             if (0 < $count = count($loaders))
                 for ($i = 0, static::$rogueLoaders += $loaders;
                      $i < $count && false != ($loader = $loaders[$i]);
                      $i++)
                     if ($loader !== static::$perfectLoaders[0])
                         spl_autoload_unregister($loader);
-        */
+
         return static::$instance;
     }
 
@@ -259,9 +259,7 @@ class AutoLoader
      * @return bool false unless className now exists
      */
     private function loadLastResort($className, $loader = null) {
-        //var_dump(static::$rogueLoaders);
         $loaders = array_unique(static::$rogueLoaders);
-        //$loaders = static::$rogueLoaders;
         if (isset($loader)) {
             if (false === array_search($loader, $loaders))
                 static::$rogueLoaders[] = $loader;

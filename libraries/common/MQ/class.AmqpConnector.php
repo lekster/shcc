@@ -86,7 +86,7 @@ class Immo_MQ_AmqpConnector extends Immo_MQ_Connector
 		{
 			$channel->basic_nack($msg->delivery_info['delivery_tag']);
 
-			throw new Exception('ERROR: XML not validated');
+			throw new Exception('ERROR: XML not validated|' . $this->last_validate_error);
 		}
 
 		$message = new Immo_MQ_Message($msg->body);

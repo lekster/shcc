@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="TransactionObj" type="TransactionObj"/>
+	<xs:complexType name="TransactionObj">
+		<xs:sequence>
+			<xs:element name="TransactionGuid" type="xs:string"/>
+			<xs:element name="ParentGuid" type="xs:string"/>
+			<xs:element name="Msisdn" type="xs:decimal"/>
+			<xs:element name="DateCreate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="Params" type="xs:string"/>
+			<xs:element name="PartnerId" type="xs:decimal"/>
+			<xs:element name="UserId" type="xs:decimal"/>
+			<xs:element name="ProcessingId" type="xs:decimal"/>
+			<xs:element name="RuleId" type="xs:decimal"/>
+			<xs:element name="ServiceId" type="xs:decimal"/>
+			<xs:element name="ProductId" type="xs:decimal"/>
+			<xs:element name="OperatorId" type="xs:decimal"/>
+			<xs:element name="OperatorGroupId" type="xs:decimal"/>
+			<xs:element name="ProcessingTransactionForeignId" type="xs:string" minOccurs="0"/>
+			<xs:element name="SumRaw" type="xs:decimal"/>
+			<xs:element name="SumProcessing" type="xs:decimal"/>
+			<xs:element name="SumUser" type="xs:decimal"/>
+			<xs:element name="SumPbsol" type="xs:decimal"/>
+			<xs:element name="SumPartner" type="xs:decimal"/>
+			<xs:element name="SumService" type="xs:decimal"/>
+			<xs:element name="SumServicePrecise" type="xs:decimal"/>
+			<xs:element name="Status" type="xs:decimal"/>
+			<xs:element name="RouteId" type="xs:decimal"/>
+			<xs:element name="VirginPrice" type="xs:decimal"/>
+			<xs:element name="ResultCode" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="ResultDescription" type="xs:string" minOccurs="0"/>
+			<xs:element name="SuccessMsg" type="xs:string" minOccurs="0"/>
+			<xs:element name="CancelMsg" type="xs:string" minOccurs="0"/>
+			<xs:element name="ValidateMsg" type="xs:string" minOccurs="0"/>
+			<xs:element name="CallbackUrl" type="xs:string" minOccurs="0"/>
+            <xs:element name="RefGuid" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

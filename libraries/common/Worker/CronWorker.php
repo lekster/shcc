@@ -4,11 +4,11 @@ namespace Worker;
 
 use Doctrine\Common\ClassLoader;
 
-//require_once 'pbr-lib-common/src/Doctrine/Common/ClassLoader.php';
-require_once 'libraries/common/CronLock/class.CronLock.php';
-require_once 'libraries/common/Config/class.Config.php';
-require_once 'libraries/common/class.Exception.php';
-//require_once 'libraries/common/ServiceLocator/class.ServiceLocator.php';
+require_once 'pbr-lib-common/src/Doctrine/Common/ClassLoader.php';
+require_once 'pbr-lib-common/src/CronLock/class.CronLock.php';
+require_once 'pbr-lib-common/src/Config/class.Config.php';
+require_once 'pbr-lib-common/src/class.Exception.php';
+//require_once 'pbr-lib-common/src/ServiceLocator/class.ServiceLocator.php';
 
 abstract class CronWorker
 {
@@ -39,7 +39,12 @@ abstract class CronWorker
 		$this->isSigTerm = true;
 	}
 
-	public function doWork($params)
+	public function sendTerminateSignal()
+	{
+		$this->isSigTerm = true;
+	}
+
+	public function doWork($params = array())
 	{
 		$this->customPreInit($params);	
 
@@ -63,10 +68,9 @@ abstract class CronWorker
 			$this->customBeforeDoWork($params);
 			$this->checkRunConditions($params);
 
-			$ret = 0;
-			while (!$this->cronLock->isNeedToStopOrRestart() && !$this->isSigTerm && $ret != -1)
+			while (!$this->cronLock->isNeedToStopOrRestart() && !$this->isSigTerm)
 			{
-				$ret = $this->work($params);
+				$this->work($params);
 				$this->cronLock->heartbeat();
 				//$this->logger->debug('run - ' . var_export($argv, 1));
 				//sleep(1);
