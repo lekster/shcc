@@ -1,6 +1,7 @@
 <?php
 
-require_once 'pbr-lib-common/src/CronLock/interface.Lockable.php';
+
+require_once 'libraries/common/CronLock/interface.Lockable.php';
 
 
 class Immo_MobileCommerce_CronLock implements Immo_MobileCommerce_Lockable

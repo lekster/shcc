@@ -4,10 +4,10 @@ namespace Worker;
 
 use Doctrine\Common\ClassLoader;
 
-require_once 'pbr-lib-common/src/Doctrine/Common/ClassLoader.php';
-require_once 'pbr-lib-common/src/CronLock/class.CronLock.php';
-require_once 'pbr-lib-common/src/Config/class.Config.php';
-require_once 'pbr-lib-common/src/class.Exception.php';
+require_once 'libraries/common/Doctrine/Common/ClassLoader.php';
+require_once 'libraries/common/CronLock/class.CronLock.php';
+require_once 'libraries/common/Config/class.Config.php';
+require_once 'libraries/common/class.Exception.php';
 //require_once 'pbr-lib-common/src/ServiceLocator/class.ServiceLocator.php';
 
 abstract class CronWorker

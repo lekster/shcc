@@ -1,8 +1,8 @@
 <?php
 
-require_once 'pbr-lib-common/src/Logger/interface.Loggable.php';
-require_once 'pbr-lib-common/src/Logger/Graylog/GELFMessage.php';
-require_once 'pbr-lib-common/src/Logger/Graylog/GELFMessagePublisher.php';
+require_once 'libraries/common/Logger/interface.Loggable.php';
+require_once 'libraries/common/Logger/Graylog/GELFMessage.php';
+require_once 'libraries/common/Logger/Graylog/GELFMessagePublisher.php';
 
 /**
  * Имплементация механизма логирования
